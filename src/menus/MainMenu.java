@@ -14,7 +14,7 @@ public class MainMenu extends BaseMenu {
     protected boolean handleSelection(int index) {
         switch (index) {
             case 0 -> {
-                new CustomerMenu().show();
+                new CustomerMenu("Kelly").show();
             }
             case 1 -> {
                 new AdminMenu().show();

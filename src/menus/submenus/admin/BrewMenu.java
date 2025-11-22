@@ -1,21 +1,28 @@
 package menus.submenus.admin;
 
 import utils.MenuNavigator;
+import orders.Order;
+import orders.OrderQueue;
 
 public class BrewMenu {
+
     public void show() {
-        String[] options = {"Process Next Order", "View All Orders", "Back"};
-
         while (true) {
-            int selected = MenuNavigator.navigate("=== Brew Coffee / Process Orders ===", options);
+            MenuNavigator.clearScreen();
+            System.out.println("=== Brew Orders ===");
 
-            switch (selected) {
-                case 0 -> System.out.println("Processing next order...");
-                case 1 -> System.out.println("Displaying all orders...");
-                case 2 -> { return; } // Back
+            if (OrderQueue.isEmpty()) {
+                System.out.println("No orders in queue.");
+                MenuNavigator.waitForEnter();
+                return;
             }
-            System.out.println("Press Enter to continue...");
-            new java.util.Scanner(System.in).nextLine();
+
+            Order nextOrder = OrderQueue.pollOrder();
+
+            System.out.println("Brewing for: " + nextOrder.getCustomerName());
+            System.out.println("Items: " + nextOrder.getItems());
+            System.out.println("\nPress Enter when finished brewing...");
+            MenuNavigator.waitForEnter();
         }
     }
 }

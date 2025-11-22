@@ -4,7 +4,7 @@ import java.util.Scanner;
 
 public class MenuNavigator {
 
-    private static Scanner scanner = new Scanner(System.in);
+    private static final Scanner scanner = new Scanner(System.in);
 
     public static int navigate(String title, String[] options) {
         int selected = 0;
@@ -29,15 +29,25 @@ public class MenuNavigator {
                 case "w" -> selected = (selected - 1 + options.length) % options.length;
                 case "s" -> selected = (selected + 1) % options.length;
                 case "" -> {
-                    return selected; // ENTER pressed
+                    return selected;
                 }
                 default -> System.out.println("Invalid input.");
             }
         }
     }
 
+    public static void waitForEnter() {
+        System.out.println("\nPress Enter to continue...");
+        scanner.nextLine();
+    }
+
     public static void clearScreen() {
         System.out.print("\033[H\033[2J");
         System.out.flush();
+    }
+
+    // NEW — safe public input method
+    public static String getInput() {
+        return scanner.nextLine();
     }
 }

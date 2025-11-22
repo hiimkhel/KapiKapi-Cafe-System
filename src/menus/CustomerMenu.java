@@ -4,13 +4,26 @@ import utils.MenuNavigator;
 
 // import the customer menus from the submenus folder
 import menus.submenus.customer.OrderMenu;
+
+
+import java.util.ArrayList;
+import java.util.List;
+
 import menus.submenus.customer.CheckOrdersMenu;
 import menus.submenus.customer.ProfileMenu;
 import menus.submenus.customer.WrappedMenu;
+import orders.Order;
+import orders.OrderQueue;
 public class CustomerMenu {
 
+    private String customerName;
+
+    public CustomerMenu(String customerName){
+        this.customerName = customerName;
+    }
+
     private final String[] options = {
-        "Order",
+        "Start Ordering",
         "Check Orders",
         "Profile",
         "KapiKapi Wrapped",
@@ -33,4 +46,5 @@ public class CustomerMenu {
             }
         }
     }
+
 }
