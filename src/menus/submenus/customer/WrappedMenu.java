@@ -5,8 +5,8 @@ import utils.MenuNavigator;
 public class WrappedMenu {
 
     private final String[] options = {
-        "Top Ordered Drink",
-        "Your Favorites",
+        "Top Drinks",
+        "Favorite Picks",
         "Order Stats",
         "Back"
     };

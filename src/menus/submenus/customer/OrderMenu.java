@@ -13,6 +13,7 @@ public class OrderMenu {
 
     private final String[] options = {
         "Browse Menu",
+        "Cart",
         "Checkout",
         "Back"
     };
@@ -46,8 +47,9 @@ public class OrderMenu {
 
             switch (choice) {
                 case 0 -> browseMenu();
-                case 1 -> checkout();
-                case 2 -> { return; }
+                // case 1 -> TODO: cart function
+                case 2 -> checkout();
+                case 3 -> { return; }
             }
 
             MenuNavigator.waitForEnter();

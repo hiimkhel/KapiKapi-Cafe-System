@@ -6,8 +6,9 @@ import utils.MenuNavigator;
 public class CheckOrdersMenu {
 
     private final String[] options = {
-        "View Pending Orders",
-        "View Completed Orders",
+        "Pending Orders",
+        "Completed Orders",
+        "Order History",
         "Back"
     };
 
