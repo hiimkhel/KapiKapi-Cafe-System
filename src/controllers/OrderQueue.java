@@ -1,7 +1,9 @@
-package orders;
+package controllers;
 
 import java.util.LinkedList;
 import java.util.Queue;
+
+import models.Order;
 
 public class OrderQueue {
 
