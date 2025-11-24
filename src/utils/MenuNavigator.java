@@ -50,4 +50,17 @@ public class MenuNavigator {
     public static String getInput() {
         return scanner.nextLine();
     }
+
+    
+    public static int getIntInput() {
+        while (true) {
+            try {
+                String input = scanner.nextLine().trim();
+                return Integer.parseInt(input);
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid number. Try again:");
+            }
+        }
+    }
 }
+

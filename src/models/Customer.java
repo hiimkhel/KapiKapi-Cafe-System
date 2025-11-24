@@ -1,72 +1,69 @@
 package models;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Customer {
-    private String name;
+
+    private String username;
+    private String password;
+
     private double walletBalance;
     private int stampCount;
     private int totalOrders;
     private int totalSpent;
 
-    public Customer(String name) {
-        this.name = name;
+    // Order history (list of Order objects)
+    private List<Order> orderHistory = new ArrayList<>();
+
+    public Customer(String username, String password) {
+        this.username = username;
+        this.password = password;
         this.walletBalance = 0.0;
         this.stampCount = 0;
         this.totalOrders = 0;
         this.totalSpent = 0;
     }
 
-    // ===== Getters =====
-    public String getName() {
-        return name;
-    }
+    // ========== GETTERS ==========
 
-    public double getWalletBalance() {
-        return walletBalance;
-    }
+    public String getUsername() { return username; }
+    public String getPassword() { return password; }
 
-    public int getStampCount() {
-        return stampCount;
-    }
+    public double getWalletBalance() { return walletBalance; }
+    public int getStampCount() { return stampCount; }
+    public int getTotalOrders() { return totalOrders; }
+    public int getTotalSpent() { return totalSpent; }
 
-    public int getTotalOrders() {
-        return totalOrders;
-    }
+    public List<Order> getOrderHistory() { return orderHistory; }
 
-    public int getTotalSpent() {
-        return totalSpent;
-    }
 
-    // ===== Customer Actions =====
+    // ========== CUSTOMER ACTIONS ==========
 
-    /** Add funds to wallet */
     public void addToWallet(double amount) {
         if (amount > 0) walletBalance += amount;
     }
 
-    /** Deduct wallet for purchases */
     public boolean deductFromWallet(double amount) {
         if (amount > walletBalance) return false;
         walletBalance -= amount;
         return true;
     }
 
-    /** Increase stamps (e.g., earn 1 stamp per order) */
     public void addStamp() {
         stampCount++;
     }
 
-    /** Increment total orders made */
-    public void recordOrder(int price) {
+    public void recordOrder(int price, Order order) {
         totalOrders++;
         totalSpent += price;
+        orderHistory.add(order);
     }
 
-    /** Returns true if eligible for free coffee (10 stamps) */
     public boolean hasFreeCoffeeReward() {
         return stampCount >= 10;
     }
 
-    /** Redeem 10 stamps for free coffee */
     public boolean redeemFreeCoffee() {
         if (stampCount >= 10) {
             stampCount -= 10;

@@ -4,22 +4,17 @@ import utils.MenuNavigator;
 
 // import the customer menus from the submenus folder
 import menus.submenus.customer.OrderMenu;
-
-
-import java.util.ArrayList;
-import java.util.List;
-
-import controllers.OrderQueue;
 import menus.submenus.customer.CheckOrdersMenu;
 import menus.submenus.customer.ProfileMenu;
 import menus.submenus.customer.WrappedMenu;
-import models.Order;
+import models.Customer;
+
 public class CustomerMenu {
 
-    private String customerName;
+    private Customer customer; // store the full customer object
 
-    public CustomerMenu(String customerName){
-        this.customerName = customerName;
+    public CustomerMenu(Customer customer){
+        this.customer = customer;
     }
 
     private final String[] options = {
@@ -32,13 +27,13 @@ public class CustomerMenu {
 
     public void show() {
         while (true) {
-            int choice = MenuNavigator.navigate("Customer Menu", options);
+            int choice = MenuNavigator.navigate("Customer Menu - " + customer.getUsername(), options);
 
             switch (choice) {
-                case 0 -> new OrderMenu(customerName).show();
-                case 1 -> new CheckOrdersMenu().show();
-                case 2 -> new WrappedMenu().show();
-                case 3 -> new ProfileMenu().show();
+                case 0 -> new OrderMenu(customer).show();       // pass customer object
+                case 1 -> new CheckOrdersMenu().show(); // pass customer object
+                case 2 -> new WrappedMenu().show();     // pass customer object
+                case 3 -> new ProfileMenu().show();     // pass customer object
                 case 4 -> {
                     System.out.println("Logged out.");
                     return;
@@ -46,5 +41,4 @@ public class CustomerMenu {
             }
         }
     }
-
 }

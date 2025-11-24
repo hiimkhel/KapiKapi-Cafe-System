@@ -4,12 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import controllers.OrderQueue;
+import models.Customer;
 import models.Order;
 import utils.MenuNavigator;
 
 public class OrderMenu {
 
-    private String customerName;
+    private final Customer customer;
 
     private final String[] options = {
         "Browse Menu",
@@ -18,7 +19,6 @@ public class OrderMenu {
         "Back"
     };
 
-    // Coffee Lists
     private final String[] coffeeNames = {
             "Americano",
             "Latte",
@@ -26,45 +26,37 @@ public class OrderMenu {
             "Mocha",
             "Caramel Macchiato"
     };
-
     private final int[] coffeePrices = {80, 120, 110, 130, 140};
 
-    // Cart
-    private List<String> cart = new ArrayList<>();
+    private final List<String> cart = new ArrayList<>();
     private int cartTotal = 0;
 
-    // Inject name from login
-    public OrderMenu(String customerName) {
-        this.customerName = customerName;
+    public OrderMenu(Customer customer) {
+        this.customer = customer;
     }
 
-    // ----------------------------------------------------------------------
-    // MAIN ORDER MENU
-    // ----------------------------------------------------------------------
     public void show() {
         while (true) {
-            int choice = MenuNavigator.navigate("Order Menu", options);
+            int choice = MenuNavigator.navigate("Order Menu - " + customer.getUsername(), options);
 
             switch (choice) {
                 case 0 -> browseMenu();
-                // case 1 -> TODO: cart function
+                case 1 -> viewCart();
                 case 2 -> checkout();
-                case 3 -> { return; }
+                case 3 -> { return; } // Back
             }
 
             MenuNavigator.waitForEnter();
         }
     }
 
-    // ----------------------------------------------------------------------
-    // BROWSE COFFEE MENU
-    // ----------------------------------------------------------------------
+    // -------------------------------------------------------------
+    // 1. BROWSE MENU
+    // -------------------------------------------------------------
     private void browseMenu() {
-
-        // Build dynamic menu with prices
         String[] menu = new String[coffeeNames.length + 1];
         for (int i = 0; i < coffeeNames.length; i++) {
-            menu[i] = coffeeNames[i] + " -" + coffeePrices[i];
+            menu[i] = coffeeNames[i] + " - ₱" + coffeePrices[i];
         }
         menu[menu.length - 1] = "Back";
 
@@ -76,18 +68,59 @@ public class OrderMenu {
             String drink = coffeeNames[choice];
             int price = coffeePrices[choice];
 
-            // Add to cart
             cart.add(drink);
             cartTotal += price;
 
-            System.out.println(drink + " added to cart! (" + price + ")");
+            System.out.println(drink + " added to cart! (₱" + price + ")");
             MenuNavigator.waitForEnter();
         }
     }
 
-    // ----------------------------------------------------------------------
-    // CHECKOUT
-    // ----------------------------------------------------------------------
+    // -------------------------------------------------------------
+    // 2. VIEW CART
+    // -------------------------------------------------------------
+    private void viewCart() {
+        MenuNavigator.clearScreen();
+        System.out.println("=== Your Cart ===");
+
+        if (cart.isEmpty()) {
+            System.out.println("Your cart is empty.");
+            return;
+        }
+
+        for (int i = 0; i < cart.size(); i++) {
+            System.out.println((i + 1) + ". " + cart.get(i));
+        }
+
+        System.out.println("\nTotal: ₱" + cartTotal);
+        System.out.println("\nRemove an item? (Enter number or 0 to go back)");
+
+        int removeChoice = MenuNavigator.getIntInput();
+
+        if (removeChoice == 0) return;
+        if (removeChoice < 1 || removeChoice > cart.size()) {
+            System.out.println("Invalid selection.");
+            return;
+        }
+
+        // Remove item
+        String removed = cart.remove(removeChoice - 1);
+        int priceIndex = findPriceIndex(removed);
+        cartTotal -= coffeePrices[priceIndex];
+
+        System.out.println(removed + " removed from cart.");
+    }
+
+    private int findPriceIndex(String drink) {
+        for (int i = 0; i < coffeeNames.length; i++) {
+            if (coffeeNames[i].equals(drink)) return i;
+        }
+        return 0;
+    }
+
+    // -------------------------------------------------------------
+    // 3. CHECKOUT
+    // -------------------------------------------------------------
     private void checkout() {
 
         if (cart.isEmpty()) {
@@ -96,16 +129,21 @@ public class OrderMenu {
         }
 
         MenuNavigator.clearScreen();
-        System.out.println("=== Checkout ===\n");
+        System.out.println("=== Checkout ===");
 
-        // Show items
         for (String item : cart) {
             System.out.println("- " + item);
         }
 
-        System.out.println("\nTotal: " + cartTotal);
-        System.out.println("\nConfirm order? (Y/N)");
+        System.out.println("\nTotal: ₱" + cartTotal);
 
+        if (customer.getWalletBalance() < cartTotal) {
+            System.out.println("\nInsufficient wallet balance!");
+            System.out.println("Please top-up your wallet in Profile.");
+            return;
+        }
+
+        System.out.println("\nConfirm order? (Y/N)");
         String confirm = MenuNavigator.getInput().toLowerCase();
 
         if (!confirm.equals("y")) {
@@ -113,15 +151,25 @@ public class OrderMenu {
             return;
         }
 
-        // Create the order object
-        Order order = new Order(customerName, new ArrayList<>(cart), cartTotal);
+        // Create order
+        Order order = new Order(customer.getUsername(), new ArrayList<>(cart), cartTotal);
+
+        // Save to customer
+        customer.recordOrder(cartTotal, order);
+
+        // Deduct money
+        customer.deductFromWallet(cartTotal);
+
+        // Add stamp
+        customer.addStamp();
+
+        // Add to brewing queue
         OrderQueue.addOrder(order);
 
         // Reset cart
         cart.clear();
         cartTotal = 0;
 
-        System.out.println("Order sent! Admin will brew it soon.");
+        System.out.println("Order placed! Admin will brew it soon.");
     }
-
 }
