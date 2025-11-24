@@ -1,9 +1,10 @@
 package menus;
 
+import utils.ConsoleUtils;
 public class MainMenu extends BaseMenu {
 
     public MainMenu() {
-        this.title = "Welcome to Kapikapi Café";
+        this.title = "Welcome to Kapikapi Cafe";
         this.options = new String[]{"Customer Login", "Admin Login", "Exit"};
     }
 
@@ -22,6 +23,7 @@ public class MainMenu extends BaseMenu {
     }
 
     private void handleCustomerLogin() {
+        ConsoleUtils.clearScreen();
         System.out.print("Enter your name/nickname: ");
         String nickname = scanner.nextLine().trim();
 
@@ -36,34 +38,34 @@ public class MainMenu extends BaseMenu {
     }
 
     private void handleAdminLogin() {
-        System.out.print("Enter admin username: ");
-        String username = scanner.nextLine().trim();
+        ConsoleUtils.clearScreen();
+        int attempts = 0;
+        final int MAX_ATTEMPTS = 3;
 
-        System.out.print("Enter admin password: ");
-        String password = scanner.nextLine().trim();
+        while (attempts < MAX_ATTEMPTS) {
+            System.out.print("Enter admin password: ");
+            String password = scanner.nextLine().trim();
 
-        // simple password check (can be improved later)
-        if (username.isEmpty()) {
-            System.out.println("Username cannot be empty.");
-            waitForEnter();
-            return;
+            if (password.isEmpty()) {
+                System.out.println("Password cannot be empty.\n");
+                continue;  // does not count as failure
+            }
+
+            if (password.equals("admin123")) {
+                System.out.println("Admin login successful!");
+                new AdminMenu().show();
+                return;  // exit after success
+            }
+
+            attempts++;
+            System.out.println("Incorrect admin password. Attempts left: " 
+                            + (MAX_ATTEMPTS - attempts) + "\n");
         }
 
-        if (password.isEmpty()) {
-            System.out.println("Password cannot be empty.");
-            waitForEnter();
-            return;
-        }
-
-        if (!password.equals("admin123")) {
-            System.out.println("Incorrect admin password.");
-            waitForEnter();
-            return;
-        }
-
-        System.out.println("Admin login successful!");
-        new AdminMenu().show();
+        System.out.println("Too many failed attempts. Returning to main menu...");
+        waitForEnter();
     }
+        
 
     private void waitForEnter() {
         System.out.println("Press Enter to continue...");
