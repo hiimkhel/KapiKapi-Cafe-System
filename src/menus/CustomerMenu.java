@@ -23,10 +23,10 @@ public class CustomerMenu {
     }
 
     private final String[] options = {
-        "Start Ordering",
-        "Check Orders",
-        "Profile",
+        "Order Drinks",
+        "My Orders",
         "KapiKapi Wrapped",
+        "Profile & Rewards",
         "Logout"
     };
 
@@ -37,8 +37,8 @@ public class CustomerMenu {
             switch (choice) {
                 case 0 -> new OrderMenu(customerName).show();
                 case 1 -> new CheckOrdersMenu().show();
-                case 2 -> new ProfileMenu().show();
-                case 3 -> new WrappedMenu().show();
+                case 2 -> new WrappedMenu().show();
+                case 3 -> new ProfileMenu().show();
                 case 4 -> {
                     System.out.println("Logged out.");
                     return;
