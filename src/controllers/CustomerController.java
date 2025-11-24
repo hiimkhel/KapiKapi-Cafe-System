@@ -1,44 +1,55 @@
 package controllers;
 
+import java.util.Scanner;
+
 import database.CustomerDatabase;
+import menus.CustomerMenu;
 import models.Customer;
-import utils.MenuNavigator;
 
 public class CustomerController {
+    private static final Scanner scanner = new Scanner(System.in);
 
     public static Customer login() {
         System.out.print("Enter username: ");
-        String username = MenuNavigator.getInput();
+        String username = scanner.nextLine().trim();
 
         System.out.print("Enter password: ");
-        String password = MenuNavigator.getInput();
+        String password = scanner.nextLine().trim();
 
-        Customer customer = CustomerDatabase.login(username, password);
-
-        if (customer == null) {
-            System.out.println("Invalid username or password!");
+        if (!CustomerDatabase.exists(username)) {
+            System.out.println("User not found.");
             return null;
         }
 
-        System.out.println("Login successful! Welcome " + username + "!");
-        return customer;
+        Customer c = CustomerDatabase.get(username);
+
+        if (!c.getPassword().equals(password)) {
+            System.out.println("Wrong password.");
+            return null;
+        }
+
+        System.out.println("Login successful!");
+        new CustomerMenu(c).show(); 
+        return c; // FIXED: must return a Customer
     }
 
     public static Customer register() {
-        System.out.print("Choose a username: ");
-        String username = MenuNavigator.getInput();
+        System.out.print("Enter username: ");
+        String username = scanner.nextLine().trim();
 
-        System.out.print("Choose a password: ");
-        String password = MenuNavigator.getInput();
-
-        Customer newCustomer = new Customer(username, password);
-
-        if (!CustomerDatabase.register(newCustomer)) {
-            System.out.println("Username already taken!");
+        if (CustomerDatabase.exists(username)) {
+            System.out.println("Username already taken.");
             return null;
         }
 
-        System.out.println("Account created successfully!");
-        return newCustomer;
+        System.out.print("Create password: ");
+        String password = scanner.nextLine().trim();
+
+        Customer c = new Customer(username, password);
+
+        CustomerDatabase.registerCustomer(c); // SAVE TO FILE/DATABASE
+
+        System.out.println("Registration complete!");
+        return c; // FIXED: must return a Customer
     }
 }
