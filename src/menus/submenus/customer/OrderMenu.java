@@ -3,8 +3,8 @@ package menus.submenus.customer;
 import java.util.ArrayList;
 import java.util.List;
 
-import orders.Order;
-import orders.OrderQueue;
+import controllers.OrderQueue;
+import models.Order;
 import utils.MenuNavigator;
 
 public class OrderMenu {

@@ -1,6 +1,6 @@
 package menus.submenus.customer;
 
-import orders.OrderQueue;
+import controllers.OrderQueue;
 import utils.MenuNavigator;
 
 public class CheckOrdersMenu {

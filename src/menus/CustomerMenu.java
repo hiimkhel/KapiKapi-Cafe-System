@@ -9,11 +9,11 @@ import menus.submenus.customer.OrderMenu;
 import java.util.ArrayList;
 import java.util.List;
 
+import controllers.OrderQueue;
 import menus.submenus.customer.CheckOrdersMenu;
 import menus.submenus.customer.ProfileMenu;
 import menus.submenus.customer.WrappedMenu;
-import orders.Order;
-import orders.OrderQueue;
+import models.Order;
 public class CustomerMenu {
 
     private String customerName;

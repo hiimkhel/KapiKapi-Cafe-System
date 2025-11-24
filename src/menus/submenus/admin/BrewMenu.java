@@ -1,8 +1,8 @@
 package menus.submenus.admin;
 
 import utils.MenuNavigator;
-import orders.Order;
-import orders.OrderQueue;
+import controllers.OrderQueue;
+import models.Order;
 
 public class BrewMenu {
 
