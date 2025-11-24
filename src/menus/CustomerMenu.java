@@ -35,7 +35,7 @@ public class CustomerMenu {
             int choice = MenuNavigator.navigate("Customer Menu", options);
 
             switch (choice) {
-                case 0 -> new OrderMenu().show();
+                case 0 -> new OrderMenu(customerName).show();
                 case 1 -> new CheckOrdersMenu().show();
                 case 2 -> new ProfileMenu().show();
                 case 3 -> new WrappedMenu().show();
