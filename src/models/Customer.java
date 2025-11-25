@@ -56,9 +56,9 @@ public class Customer implements Serializable {
         stampCount++;
     }
 
-    public void recordOrder(int price, Order order) {
+    public void recordOrder(Order order) {
         totalOrders++;
-        totalSpent += price;
+        totalSpent += order.getTotalPrice();
         orderHistory.add(order);
     }
 

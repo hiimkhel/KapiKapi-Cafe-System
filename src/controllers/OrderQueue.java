@@ -2,29 +2,56 @@ package controllers;
 
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.ArrayList;
+import java.util.List;
 
 import models.Order;
 
 public class OrderQueue {
 
-    private static final Queue<Order> queue = new LinkedList<>();
+    // Orders waiting to be brewed
+    private static final Queue<Order> pendingOrders = new LinkedList<>();
 
-    // Customer adds an order to the queue
+    // Orders already brewed (completed)
+    private static final List<Order> completedOrders = new ArrayList<>();
+
+
+    // ============================
+    // ADD ORDER (Customer)
+    // ============================
     public static void addOrder(Order order) {
-        queue.add(order);
+        pendingOrders.add(order);
     }
 
-    // Admin brews (removes) the next order
-    public static Order pollOrder() {
-        return queue.poll();
+
+    // ============================
+    // POLL (Admin brews next order)
+    // ============================
+    public static Order brewNextOrder() {
+        Order order = pendingOrders.poll();
+        if (order != null) {
+            order.markBrewed();
+            completedOrders.add(order);
+        }
+        return order;
     }
 
-    // Admin views queue
-    public static Queue<Order> getOrders() {
-        return queue;
+
+    // ============================
+    // GETTERS
+    // ============================
+
+    // Pending orders for admin / customer to view
+    public static Queue<Order> getPendingOrders() {
+        return pendingOrders;
     }
 
-    public static boolean isEmpty() {
-        return queue.isEmpty();
+    // Completed orders (history)
+    public static List<Order> getCompletedOrders() {
+        return completedOrders;
+    }
+
+    public static boolean hasPendingOrders() {
+        return !pendingOrders.isEmpty();
     }
 }

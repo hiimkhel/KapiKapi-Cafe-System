@@ -31,7 +31,7 @@ public class CustomerMenu {
 
             switch (choice) {
                 case 0 -> new OrderMenu(customer).show();       // pass customer object
-                case 1 -> new CheckOrdersMenu().show(); // pass customer object
+                case 1 -> new CheckOrdersMenu(customer).show(); // pass customer object
                 case 2 -> new WrappedMenu().show();     // pass customer object
                 case 3 -> new ProfileMenu().show();     // pass customer object
                 case 4 -> {

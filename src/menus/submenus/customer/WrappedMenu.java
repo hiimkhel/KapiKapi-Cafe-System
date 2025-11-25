@@ -7,7 +7,6 @@ public class WrappedMenu {
     private final String[] options = {
         "Top Drinks",
         "Favorite Picks",
-        "Order Stats",
         "Back"
     };
 
@@ -18,8 +17,7 @@ public class WrappedMenu {
             switch (choice) {
                 case 0 -> System.out.println("Your top drink...");
                 case 1 -> System.out.println("Your favorites...");
-                case 2 -> System.out.println("Your stats...");
-                case 3 -> { return; }
+                case 2 -> { return; }
             }
 
             pause();
