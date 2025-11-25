@@ -4,10 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import controllers.OrderQueue;
+import models.CoffeeMenu;
 import models.Coffee;
 import models.Customer;
 import models.Order;
-import utils.MenuNavigator;
+import utils.MenuNavigator;;
 
 public class OrderMenu {
 

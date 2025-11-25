@@ -19,7 +19,7 @@ public class AdminMenu {
 
             switch (choice) {
                 case 0 -> new OrdersDashboardMenu().show();
-                // case 1 -> new MenuInventoryMenu().show();
+                case 1 -> new MenuInventoryMenu().show();
                 // case 2 -> new CustomerAnalyticsMenu().show();
                 // case 3 -> new EmployeeManagementMenu().show();
                 case 4 -> { 
