@@ -21,7 +21,7 @@ public class AdminMenu {
                 case 0 -> new OrdersDashboardMenu().show();
                 case 1 -> new MenuInventoryMenu().show();
                 case 2 -> new CustomerAnalyticsMenu().show();
-                // case 3 -> new EmployeeManagementMenu().show();
+                case 3 -> new EmployeeManagementMenu().show();
                 case 4 -> { 
                     System.out.println("Logging out...");
                     return;

@@ -2,7 +2,6 @@ package controllers;
 
 import java.util.Scanner;
 
-import javax.xml.crypto.Data;
 
 import database.Database;
 import menus.CustomerMenu;

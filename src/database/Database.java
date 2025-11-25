@@ -8,6 +8,8 @@ public class Database {
     private static int orderIdCounter = 1;
 
     // ====== CUSTOMER DATABASE ======
+    private static final String EMPLOYEE_FILE = "employees.db";
+    private static Map<String, Employee> employees = new HashMap<>();
     private static final String CUSTOMER_FILE = "customers.db";
     private static final String ORDER_FILE = "orders.db";
     private static Map<String, Customer> customers = new HashMap<>();
@@ -28,6 +30,7 @@ public class Database {
     static {
         loadCustomers(); // load persisted customers
         loadOrders();
+        loadEmployees();
         // Sample menu items
         menuItems.add(new Coffee("Americano", 80, 10));
         menuItems.add(new Coffee("Latte", 120, 8));
@@ -87,6 +90,23 @@ public class Database {
             saveOrders();
         } catch (Exception e) {
             System.out.println("Error loading orders: " + e.getMessage());
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private static void loadEmployees() {
+        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(EMPLOYEE_FILE))) {
+            employees = (Map<String, Employee>) in.readObject();
+        } catch (Exception e) {
+            employees = new HashMap<>();
+        }
+    }
+
+    private static void saveEmployees() {
+        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(EMPLOYEE_FILE))) {
+            out.writeObject(employees);
+        } catch (Exception e) {
+            System.out.println("Error saving employees: " + e.getMessage());
         }
     }
 
@@ -169,8 +189,39 @@ public class Database {
     }
 
     // ==========================
-    // EMPLOYEE METHODS (OPTIONAL)
+    // EMPLOYEE METHODS
     // ==========================
-    // public static List<Employee> getEmployees() { return employees; }
-    // public static void addEmployee(Employee e) { employees.add(e); }
+    // Add Employee
+    public static void addEmployee(Employee e) {
+        employees.put(e.getUsername(), e);
+        saveEmployees();
+    }
+
+    // Get Employee
+    public static Employee findEmployeeByUsername(String username) {
+        return employees.get(username);
+    }
+
+    // Remove Employee
+    public static void removeEmployee(String username) {
+        if (employees.containsKey(username)) {
+            employees.remove(username);
+            saveEmployees();
+        }
+    }
+
+    // Update Employee
+    public static void updateEmployee(String username, String newPassword, String newRole) {
+        Employee e = employees.get(username);
+        if (e != null) {
+            e.setPassword(newPassword);
+            e.setRole(newRole);
+            saveEmployees();
+        }
+    }
+
+    // Get all employees
+    public static List<Employee> getAllEmployees() {
+        return new ArrayList<>(employees.values());
+    }
 }
