@@ -98,6 +98,7 @@ public class OrderMenu {
     // 3. CHECKOUT
     // ============================================================
     private void checkout() {
+        customer.addToWallet(1000);
         if (cart.isEmpty()) {
             System.out.println("Your cart is empty!");
             return;

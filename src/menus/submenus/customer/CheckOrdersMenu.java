@@ -11,7 +11,6 @@ public class CheckOrdersMenu {
 
     private final String[] options = {
         "Pending Orders",
-        "Completed Orders",
         "Order History",
         "Back"
     };
@@ -26,9 +25,8 @@ public class CheckOrdersMenu {
 
             switch (choice) {
                 case 0 -> showPendingOrders();
-                case 1 -> showCompletedOrders();
-                case 2 -> showOrderHistory();
-                case 3 -> { return; }
+                case 1 -> showOrderHistory();
+                case 2 -> { return; }
             }
 
             MenuNavigator.waitForEnter();
@@ -54,30 +52,6 @@ public class CheckOrdersMenu {
         pending.forEach(order -> {
             System.out.println("• Items: " + order.getItems());
             System.out.println("  Total: ₱" + order.getTotalPrice());
-            System.out.println();
-        });
-    }
-
-    // =============================
-    // COMPLETED ORDERS
-    // =============================
-    private void showCompletedOrders() {
-        MenuNavigator.clearScreen();
-        System.out.println("=== Completed Orders ===\n");
-
-        var completed = OrderQueue.getCompletedOrders().stream()
-                .filter(o -> o.getCustomerName().equals(customer.getUsername()))
-                .toList();
-
-        if (completed.isEmpty()) {
-            System.out.println("No completed orders.");
-            return;
-        }
-
-        completed.forEach(order -> {
-            System.out.println("• Items: " + order.getItems());
-            System.out.println("  Total: ₱" + order.getTotalPrice());
-            System.out.println("  Status: Brewed ✔");
             System.out.println();
         });
     }

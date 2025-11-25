@@ -9,30 +9,18 @@ public class BrewMenu {
     public void show() {
         while (true) {
             MenuNavigator.clearScreen();
-            System.out.println("=== Brew Orders ===\n");
+            System.out.println("=== Brew Orders ===");
 
             if (!OrderQueue.hasPendingOrders()) {
-                System.out.println("No pending orders.");
+                System.out.println("No orders in queue.");
                 MenuNavigator.waitForEnter();
                 return;
             }
 
-            Order next = OrderQueue.brewNextOrder(); // Updated Method
-
-            if (next == null) {
-                System.out.println("No orders to brew.");
-                MenuNavigator.waitForEnter();
-                return;
-            }
-
-            System.out.println("Brewing Order for: " + next.getCustomerName());
-            System.out.println("Items: " + next.getItems());
-            System.out.println("\nStatus: BREWING...");
-
-            System.out.println("\nPress Enter when brewing is complete...");
-            MenuNavigator.waitForEnter();
-
-            System.out.println("Order marked as COMPLETED!");
+            Order nextOrder = OrderQueue.brewNextOrder();
+            System.out.println("Brewing for: " + nextOrder.getCustomerName());
+            System.out.println("Items: " + nextOrder.getItems());
+            System.out.println("\nPress Enter when finished brewing...");
             MenuNavigator.waitForEnter();
         }
     }
