@@ -2,7 +2,9 @@ package controllers;
 
 import java.util.Scanner;
 
-import database.CustomerDatabase;
+import javax.xml.crypto.Data;
+
+import database.Database;
 import menus.CustomerMenu;
 import models.Customer;
 
@@ -16,12 +18,12 @@ public class CustomerController {
         System.out.print("Enter password: ");
         String password = scanner.nextLine().trim();
 
-        if (!CustomerDatabase.exists(username)) {
+        if (!Database.exists(username)) {
             System.out.println("User not found.");
             return null;
         }
 
-        Customer c = CustomerDatabase.get(username);
+        Customer c = Database.get(username);
 
         if (!c.getPassword().equals(password)) {
             System.out.println("Wrong password.");
@@ -37,7 +39,7 @@ public class CustomerController {
         System.out.print("Enter username: ");
         String username = scanner.nextLine().trim();
 
-        if (CustomerDatabase.exists(username)) {
+        if (Database.exists(username)) {
             System.out.println("Username already taken.");
             return null;
         }
@@ -47,7 +49,7 @@ public class CustomerController {
 
         Customer c = new Customer(username, password);
 
-        CustomerDatabase.registerCustomer(c); // SAVE TO FILE/DATABASE
+        Database.registerCustomer(c); // SAVE TO FILE/DATABASE
 
         System.out.println("Registration complete!");
         return c; // FIXED: must return a Customer

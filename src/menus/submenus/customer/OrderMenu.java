@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import controllers.OrderQueue;
+import database.Database;
 import models.CoffeeMenu;
 import models.Coffee;
 import models.Customer;
@@ -99,7 +100,6 @@ public class OrderMenu {
     // 3. CHECKOUT
     // ============================================================
     private void checkout() {
-        customer.addToWallet(1000);
         if (cart.isEmpty()) {
             System.out.println("Your cart is empty!");
             return;
@@ -133,8 +133,8 @@ public class OrderMenu {
 
         Order order = new Order(customer.getUsername(), items, cartTotal);
 
-        // Record to customer history
-        customer.recordOrder(order);
+        // Add to main Database (for analytics & persistence)
+        Database.addOrder(order);  
 
         // Deduct wallet and add stamp
         customer.deductFromWallet(cartTotal);
