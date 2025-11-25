@@ -6,7 +6,7 @@ import utils.MenuNavigator;
 import menus.submenus.customer.OrderMenu;
 import menus.submenus.customer.CheckOrdersMenu;
 import menus.submenus.customer.ProfileMenu;
-import menus.submenus.customer.WrappedMenu;
+import menus.submenus.customer.WrappedPage;
 import models.Customer;
 
 public class CustomerMenu {
@@ -32,7 +32,7 @@ public class CustomerMenu {
             switch (choice) {
                 case 0 -> new OrderMenu(customer).show();       // pass customer object
                 case 1 -> new CheckOrdersMenu(customer).show(); // pass customer object
-                case 2 -> new WrappedMenu().show();     // pass customer object
+                case 2 -> new WrappedPage(customer).show();     // pass customer object
                 case 3 -> new ProfileMenu().show();     // pass customer object
                 case 4 -> {
                     System.out.println("Logged out.");
