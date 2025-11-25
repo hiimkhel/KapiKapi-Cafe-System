@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import controllers.OrderQueue;
+import models.Coffee;
 import models.Customer;
 import models.Order;
 import utils.MenuNavigator;
@@ -11,26 +12,10 @@ import utils.MenuNavigator;
 public class OrderMenu {
 
     private final Customer customer;
+    private final String[] options = { "Browse Menu", "Cart", "Checkout", "Back" };
 
-    private final String[] options = {
-        "Browse Menu",
-        "Cart",
-        "Checkout",
-        "Back"
-    };
-
-    // Coffee menu
-    private final String[] coffeeNames = {
-            "Americano",
-            "Latte",
-            "Cappuccino",
-            "Mocha",
-            "Caramel Macchiato"
-    };
-
-    private final int[] coffeePrices = {80, 120, 110, 130, 140};
-
-    private final List<String> cart = new ArrayList<>();
+    private final List<Coffee> coffeeList = CoffeeMenu.getCoffees();
+    private final List<Coffee> cart = new ArrayList<>();
     private int cartTotal = 0;
 
     public OrderMenu(Customer customer) {
@@ -45,7 +30,7 @@ public class OrderMenu {
                 case 0 -> browseMenu();
                 case 1 -> viewCart();
                 case 2 -> checkout();
-                case 3 -> { return; }
+                case 3 -> { return; } // Back
             }
 
             MenuNavigator.waitForEnter();
@@ -56,25 +41,23 @@ public class OrderMenu {
     // 1. BROWSE MENU
     // ============================================================
     private void browseMenu() {
-        String[] menu = new String[coffeeNames.length + 1];
-
-        for (int i = 0; i < coffeeNames.length; i++) {
-            menu[i] = coffeeNames[i] + " - ₱" + coffeePrices[i];
+        String[] menuOptions = new String[coffeeList.size() + 1];
+        for (int i = 0; i < coffeeList.size(); i++) {
+            Coffee c = coffeeList.get(i);
+            menuOptions[i] = c.getName() + " - " + c.getPrice();
         }
-        menu[menu.length - 1] = "Back";
+        menuOptions[menuOptions.length - 1] = "Back";
 
         while (true) {
-            int choice = MenuNavigator.navigate("Coffee Menu", menu);
+            int choice = MenuNavigator.navigate("Coffee Menu", menuOptions);
 
-            if (choice == menu.length - 1) break;
+            if (choice == menuOptions.length - 1) break;
 
-            String drink = coffeeNames[choice];
-            int price = coffeePrices[choice];
+            Coffee selected = coffeeList.get(choice);
+            cart.add(selected);
+            cartTotal += selected.getPrice();
 
-            cart.add(drink);
-            cartTotal += price;
-
-            System.out.println(drink + " added to cart! (₱" + price + ")");
+            System.out.println(selected.getName() + " added to cart! (₱" + selected.getPrice() + ")");
             MenuNavigator.waitForEnter();
         }
     }
@@ -92,39 +75,29 @@ public class OrderMenu {
         }
 
         for (int i = 0; i < cart.size(); i++) {
-            System.out.println((i + 1) + ". " + cart.get(i));
+            Coffee c = cart.get(i);
+            System.out.println((i + 1) + ". " + c.getName() + " - ₱" + c.getPrice());
         }
 
         System.out.println("\nTotal: ₱" + cartTotal);
         System.out.println("Remove an item? (Enter number or 0 to go back)");
 
         int removeChoice = MenuNavigator.getIntInput();
-
         if (removeChoice == 0) return;
         if (removeChoice < 1 || removeChoice > cart.size()) {
             System.out.println("Invalid selection.");
             return;
         }
 
-        String removed = cart.remove(removeChoice - 1);
-        int priceIndex = findPriceIndex(removed);
-        cartTotal -= coffeePrices[priceIndex];
-
-        System.out.println(removed + " removed from cart.");
-    }
-
-    private int findPriceIndex(String drink) {
-        for (int i = 0; i < coffeeNames.length; i++) {
-            if (coffeeNames[i].equals(drink)) return i;
-        }
-        return 0;
+        Coffee removed = cart.remove(removeChoice - 1);
+        cartTotal -= removed.getPrice();
+        System.out.println(removed.getName() + " removed from cart.");
     }
 
     // ============================================================
     // 3. CHECKOUT
     // ============================================================
     private void checkout() {
-        customer.addToWallet(1000); // TEMPORARY
         if (cart.isEmpty()) {
             System.out.println("Your cart is empty!");
             return;
@@ -133,40 +106,36 @@ public class OrderMenu {
         MenuNavigator.clearScreen();
         System.out.println("=== Checkout ===");
 
-        for (String item : cart) {
-            System.out.println("- " + item);
+        for (Coffee c : cart) {
+            System.out.println("- " + c.getName() + " - ₱" + c.getPrice());
         }
 
         System.out.println("\nTotal: ₱" + cartTotal);
 
         // Wallet check
         if (customer.getWalletBalance() < cartTotal) {
-            System.out.println("\nInsufficient wallet balance!");
+            System.out.println("\nInsufficient wallet balance! Please top-up in Profile.");
             return;
         }
 
         System.out.println("\nConfirm order? (Y/N)");
         String confirm = MenuNavigator.getInput().toLowerCase();
-
         if (!confirm.equals("y")) {
             System.out.println("Order cancelled.");
             return;
         }
 
         // Create order object
-        Order order = new Order(
-                customer.getUsername(),
-                new ArrayList<>(cart),
-                cartTotal
-        );
+        List<String> items = new ArrayList<>();
+        for (Coffee c : cart) items.add(c.getName());
 
-        // Save to customer history
+        Order order = new Order(customer.getUsername(), items, cartTotal);
+
+        // Record to customer history
         customer.recordOrder(order);
 
-        // Deduct wallet
+        // Deduct wallet and add stamp
         customer.deductFromWallet(cartTotal);
-
-        // Add stamp
         customer.addStamp();
 
         // Add to brewing queue
@@ -178,5 +147,4 @@ public class OrderMenu {
 
         System.out.println("Order placed! Admin will brew it soon.");
     }
-
 }
