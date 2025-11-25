@@ -33,7 +33,7 @@ public class CustomerMenu {
                 case 0 -> new OrderMenu(customer).show();       // pass customer object
                 case 1 -> new CheckOrdersMenu(customer).show(); // pass customer object
                 case 2 -> new WrappedPage(customer).show();     // pass customer object
-                case 3 -> new ProfileMenu().show();     // pass customer object
+                case 3 -> new ProfileMenu(customer).show();     // pass customer object
                 case 4 -> {
                     System.out.println("Logged out.");
                     return;

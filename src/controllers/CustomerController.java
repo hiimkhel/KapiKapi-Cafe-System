@@ -52,4 +52,41 @@ public class CustomerController {
         System.out.println("Registration complete!");
         return c; // FIXED: must return a Customer
     }
+
+    
+    // --------------------------
+    // WALLET OPERATIONS
+    // --------------------------
+    public static void topUpWallet(Customer customer, int amount) {
+        if (amount > 0) {
+            customer.addToWallet(amount);
+        }
+    }
+
+    // --------------------------
+    // STAMP OPERATIONS
+    // --------------------------
+    public static boolean canRedeemCoffee(Customer customer) {
+        return customer.hasFreeCoffeeReward();
+    }
+
+    public static boolean redeemFreeCoffee(Customer customer) {
+        return customer.redeemFreeCoffee();
+    }
+
+    // --------------------------
+    // ACHIEVEMENTS
+    // --------------------------
+    public static int getTotalOrders(Customer customer) {
+        return customer.getTotalOrders();
+    }
+
+    public static int getTotalSpent(Customer customer) {
+        return customer.getTotalSpent();
+    }
+
+    public static int getStampCount(Customer customer) {
+        return customer.getStampCount();
+    }
+    
 }
