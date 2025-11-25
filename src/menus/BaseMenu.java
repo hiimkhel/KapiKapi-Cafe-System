@@ -11,9 +11,16 @@ public abstract class BaseMenu {
     protected Scanner scanner = new Scanner(System.in);
 
     public void show() {
+        int width = 120; 
         while (true) {
             ConsoleUtils.clearScreen();
-            System.out.println("=== " + title + " ===\n");
+            printHeaderCentered();
+            // Center the title inside the border
+            int totalPadding = width - title.length() - 2; // 2 for the spaces around title
+            int leftPadding = totalPadding / 2;
+            int rightPadding = totalPadding - leftPadding;
+
+            System.out.println("\n" + "=".repeat(leftPadding) + " " + title + " " + "=".repeat(rightPadding) + "\n");
 
             // Print menu with highlight
             for (int i = 0; i < options.length; i++) {
@@ -42,4 +49,22 @@ public abstract class BaseMenu {
 
     // Each menu will override this
     protected abstract boolean handleSelection(int index);
+
+    public static void printHeaderCentered() {
+        String[] lines = {
+            "██╗  ██╗ █████╗ ██████╗ ██╗██╗  ██╗ █████╗ ██████╗ ██╗     ██████╗ █████╗ ███████╗███████╗",
+            "██║ ██╔╝██╔══██╗██╔══██╗██║██║ ██╔╝██╔══██╗██╔══██╗██║    ██╔════╝██╔══██╗██╔════╝██╔════╝",
+            "█████╔╝ ███████║██████╔╝██║█████╔╝ ███████║██████╔╝██║    ██║     ███████║█████╗  █████╗  ",
+            "██╔═██╗ ██╔══██║██╔═══╝ ██║██╔═██╗ ██╔══██║██╔═══╝ ██║    ██║     ██╔══██║██╔══╝  ██╔══╝  ",
+            "██║  ██╗██║  ██║██║     ██║██║  ██╗██║  ██║██║     ██║    ╚██████╗██║  ██║██║     ███████╗",
+            "╚═╝  ╚═╝╚═╝  ╚═╝╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝     ╚═╝     ╚═════╝╚═╝  ╚═╝╚═╝     ╚══════╝"
+        };
+
+        int width = 120; // <-- Change depending on your terminal width
+
+        for (String line : lines) {
+            int padding = (width - line.length()) / 2;
+            System.out.println(" ".repeat(Math.max(0, padding)) + line);
+        }
+    }
 }

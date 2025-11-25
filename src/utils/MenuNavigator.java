@@ -8,11 +8,17 @@ public class MenuNavigator {
 
     public static int navigate(String title, String[] options) {
         int selected = 0;
-
+        int width = 120;
         while (true) {
             clearScreen();
+            printBorder();
+            printHeaderCentered();
+            // Center the title inside the border
+            int totalPadding = width - title.length() - 2; // 2 for the spaces around title
+            int leftPadding = totalPadding / 2;
+            int rightPadding = totalPadding - leftPadding;
 
-            System.out.println("=== " + title + " ===\n");
+            System.out.println("\n" + "=".repeat(leftPadding) + " " + title + " " + "=".repeat(rightPadding) + "\n");
 
             for (int i = 0; i < options.length; i++) {
                 if (i == selected)
@@ -61,6 +67,26 @@ public class MenuNavigator {
                 System.out.println("Invalid number. Try again:");
             }
         }
+    }
+    public static void printHeaderCentered() {
+        String[] lines = {
+            "██╗  ██╗ █████╗ ██████╗ ██╗██╗  ██╗ █████╗ ██████╗ ██╗     ██████╗ █████╗ ███████╗███████╗",
+            "██║ ██╔╝██╔══██╗██╔══██╗██║██║ ██╔╝██╔══██╗██╔══██╗██║    ██╔════╝██╔══██╗██╔════╝██╔════╝",
+            "█████╔╝ ███████║██████╔╝██║█████╔╝ ███████║██████╔╝██║    ██║     ███████║█████╗  █████╗  ",
+            "██╔═██╗ ██╔══██║██╔═══╝ ██║██╔═██╗ ██╔══██║██╔═══╝ ██║    ██║     ██╔══██║██╔══╝  ██╔══╝  ",
+            "██║  ██╗██║  ██║██║     ██║██║  ██╗██║  ██║██║     ██║    ╚██████╗██║  ██║██║     ███████╗",
+            "╚═╝  ╚═╝╚═╝  ╚═╝╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝     ╚═╝     ╚═════╝╚═╝  ╚═╝╚═╝     ╚══════╝",
+        };
+
+        int width = 120; // <-- Change depending on your terminal width
+
+        for (String line : lines) {
+            int padding = (width - line.length()) / 2;
+            System.out.println(" ".repeat(Math.max(0, padding)) + line);
+        }
+    }
+    public static void printBorder(){
+        System.out.println("=======================================================================================================================");
     }
 }
 

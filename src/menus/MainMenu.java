@@ -5,7 +5,7 @@ import models.Customer;
 public class MainMenu extends BaseMenu {
 
     public MainMenu() {
-        this.title = "Welcome to Kapikapi Cafe";
+        this.title = "Welcome to our Cafe";
         this.options = new String[]{"Customer Login", "Admin Login", "Exit"};
     }
 
