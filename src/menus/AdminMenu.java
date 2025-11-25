@@ -1,41 +1,28 @@
 package menus;
 
+import menus.submenus.admin.*;
 import utils.MenuNavigator;
 
-// Admin submenus
-import menus.submenus.admin.EditMenuMenu;
-import menus.submenus.admin.BrewMenu;
-import menus.submenus.admin.TopCustomersMenu;
-import menus.submenus.admin.PendingOrdersMenu;
-import menus.submenus.admin.SalesReportMenu;
-import menus.submenus.admin.InventoryMenu;
-import menus.submenus.admin.EmployeeMenu;
-
 public class AdminMenu {
-    private String[] options = {
-        "Edit Menu",
-        "Brew Coffee / Process Orders",
-        "Top Customers",
-        "View Pending Orders",
-        "Sales Report",
-        "Inventory Management",
-        "Manage Employees",
+
+    private final String[] options = {
+        "Orders Dashboard",
+        "Menu & Inventory",
+        "Customer Analytics",
+        "Employee Management",
         "Logout"
     };
 
     public void show() {
         while (true) {
-            int selected = MenuNavigator.navigate("=== Admin Dashboard ===", options);
+            int choice = MenuNavigator.navigate("==== Admin Dashboard", options);
 
-            switch (selected) {
-                case 0 -> new EditMenuMenu().show();
-                case 1 -> new BrewMenu().show();
-                case 2 -> new TopCustomersMenu().show();
-                case 3 -> new PendingOrdersMenu().show();
-                case 4 -> new SalesReportMenu().show();
-                case 5 -> new InventoryMenu().show();
-                case 6 -> new EmployeeMenu().show();
-                case 7 -> {
+            switch (choice) {
+                case 0 -> new OrdersDashboardMenu().show();
+                // case 1 -> new MenuInventoryMenu().show();
+                // case 2 -> new CustomerAnalyticsMenu().show();
+                // case 3 -> new EmployeeManagementMenu().show();
+                case 4 -> { 
                     System.out.println("Logging out...");
                     return;
                 }
