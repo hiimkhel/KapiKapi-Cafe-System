@@ -16,6 +16,10 @@ public class CustomerAnalyticsMenu {
 
     public void show() {
         while (true) {
+            MenuNavigator.clearScreen();
+            MenuNavigator.printHeaderCentered();
+            MenuNavigator.printBorder();
+
             int choice = MenuNavigator.navigate("=== Customer Analytics ===", options);
 
             switch (choice) {

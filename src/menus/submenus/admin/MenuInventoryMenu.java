@@ -34,7 +34,9 @@ public class MenuInventoryMenu {
 
     private void viewMenu() {
         MenuNavigator.clearScreen();
-        System.out.println("=== Current Coffee Menu ===");
+        MenuNavigator.printHeaderCentered();
+        MenuNavigator.printBorder();
+
         List<Coffee> list = CoffeeMenu.getCoffees();
         for (int i = 0; i < list.size(); i++) {
             System.out.println((i + 1) + ". " + list.get(i));

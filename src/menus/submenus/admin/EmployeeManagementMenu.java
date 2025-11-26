@@ -16,6 +16,10 @@ public class EmployeeManagementMenu {
 
     public void show() {
         while (true) {
+            MenuNavigator.clearScreen();
+            MenuNavigator.printHeaderCentered();
+            MenuNavigator.printBorder();
+
             int choice = MenuNavigator.navigate("=== Employee Management ===", options);
 
             switch (choice) {

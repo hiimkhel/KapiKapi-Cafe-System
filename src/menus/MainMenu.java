@@ -44,7 +44,7 @@ public class MainMenu {
         while (attempts < 3) {
             MenuNavigator.clearScreen();
             MenuNavigator.printHeaderCentered();
-
+            System.out.println("=======================================================================================================================");
             System.out.print("\t\t\t\tEnter admin password: ");
             String password = MenuNavigator.getInput().trim();
 

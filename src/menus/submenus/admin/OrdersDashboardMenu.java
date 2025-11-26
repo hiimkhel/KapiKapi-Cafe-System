@@ -17,7 +17,9 @@ public class OrdersDashboardMenu {
     public void show() {
         while (true) {
             MenuNavigator.clearScreen();
-            System.out.println("=== Brew Orders Station ===");
+            MenuNavigator.printHeaderCentered();
+            MenuNavigator.printBorder();
+
 
             if (!OrderQueue.hasPendingOrders()) {
                 System.out.println("No pending orders. All caught up!");
