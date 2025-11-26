@@ -11,19 +11,18 @@ public class MenuNavigator {
         int selected = 0;
         String lastInput = "";
 
+        int width = 120;
         while (true) {
             clearScreen();
             printBorder();
             printHeaderCentered();
             // Center the title inside the border
-            int totalPadding = WIDTH - title.length() - 2; // 2 for the spaces around title
+            int totalPadding = width - title.length() - 2; // 2 for the spaces around title
             int leftPadding = totalPadding / 2;
             int rightPadding = totalPadding - leftPadding;
 
-            printTitleBorder(title);
-            System.out.println();
+            System.out.println("\n" + "=".repeat(leftPadding) + " " + title + " " + "=".repeat(rightPadding) + "\n");
 
-            // Print centered menu options
             for (int i = 0; i < options.length; i++) {
                 boolean highlight = (i == selected);
                 String text = highlight
@@ -142,3 +141,4 @@ String input = scanner.nextLine().toLowerCase();
         System.out.println("=======================================================================================================================");
     }
 }
+
