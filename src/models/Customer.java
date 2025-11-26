@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import database.Database;
+
 public class Customer implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -43,22 +45,26 @@ public class Customer implements Serializable {
     // ====== Customer Actions ======
     public void addToWallet(double amount) {
         if (amount > 0) walletBalance += amount;
+        Database.updateCustomer(this);
     }
 
     public boolean deductFromWallet(double amount) {
         if (amount > walletBalance) return false;
         walletBalance -= amount;
+        Database.updateCustomer(this);
         return true;
     }
 
     public void addStamp() {
         stampCount++;
+        Database.updateCustomer(this);
     }
 
     public void recordOrder(Order order) {
         totalOrders++;
         totalSpent += order.getTotalPrice();
         orderHistory.add(order);
+        Database.updateCustomer(this);
     }
 
     public boolean hasFreeCoffeeReward() { return stampCount >= 10; }
@@ -66,6 +72,7 @@ public class Customer implements Serializable {
     public boolean redeemFreeCoffee() {
         if (stampCount >= 10) {
             stampCount -= 10;
+            Database.updateCustomer(this);
             return true;
         }
         return false;
@@ -104,12 +111,14 @@ public class Customer implements Serializable {
         if (cart == null) cart = new ArrayList<>();
         cart.add(coffee);
         cartTotal += coffee.getPrice();
+        Database.updateCustomer(this);
     }
 
     public Coffee removeFromCart(int index) {
         if (index >= 0 && index < cart.size()) {
             Coffee removed = cart.remove(index);
             cartTotal -= removed.getPrice();
+            Database.updateCustomer(this);
             return removed;
         }
         return null;
@@ -118,6 +127,7 @@ public class Customer implements Serializable {
     public void clearCart() {
         cart.clear();
         cartTotal = 0;
+        Database.updateCustomer(this);
     }
 
 }

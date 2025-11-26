@@ -9,21 +9,17 @@ import models.CoffeeMenu;
 import models.Coffee;
 import models.Customer;
 import models.Order;
-import utils.MenuNavigator;;
+import utils.MenuNavigator;
 
 public class OrderMenu {
 
     private final Customer customer;
     private final String[] options = { "Browse Menu", "Cart", "Checkout", "Back" };
-
     private final List<Coffee> coffeeList = CoffeeMenu.getCoffees();
-    
-    private int cartTotal = 0;
 
     public OrderMenu(Customer customer) {
         this.customer = customer;
     }
-
 
     public void show() {
         while (true) {
@@ -47,18 +43,16 @@ public class OrderMenu {
         String[] menuOptions = new String[coffeeList.size() + 1];
         for (int i = 0; i < coffeeList.size(); i++) {
             Coffee c = coffeeList.get(i);
-            menuOptions[i] = c.getName() + " - " + c.getPrice();
+            menuOptions[i] = c.getName() + " - ₱" + c.getPrice();
         }
         menuOptions[menuOptions.length - 1] = "Back";
 
         while (true) {
             int choice = MenuNavigator.navigate("Coffee Menu", menuOptions);
-
             if (choice == menuOptions.length - 1) break;
 
             Coffee selected = coffeeList.get(choice);
-            customer.addToCart(selected);
-
+            customer.addToCart(selected); // automatically updates database
 
             System.out.println(selected.getName() + " added to cart! (₱" + selected.getPrice() + ")");
             MenuNavigator.waitForEnter();
@@ -88,12 +82,13 @@ public class OrderMenu {
 
         int removeChoice = MenuNavigator.getIntInput();
         if (removeChoice == 0) return;
+
         if (removeChoice < 1 || removeChoice > cart.size()) {
             System.out.println("Invalid selection.");
             return;
         }
 
-        Coffee removed = customer.removeFromCart(removeChoice - 1);
+        Coffee removed = customer.removeFromCart(removeChoice - 1); // updates database
         System.out.println(removed.getName() + " removed from cart.");
     }
 
@@ -115,10 +110,10 @@ public class OrderMenu {
             System.out.println("- " + c.getName() + " - ₱" + c.getPrice());
         }
 
-        System.out.println("\nTotal: ₱" + cartTotal);
+        System.out.println("\nTotal: ₱" + customer.getCartTotal());
 
         // Wallet check
-        if (customer.getWalletBalance() < cartTotal) {
+        if (customer.getWalletBalance() < customer.getCartTotal()) {
             System.out.println("\nInsufficient wallet balance! Please top-up in Profile.");
             return;
         }
@@ -134,21 +129,17 @@ public class OrderMenu {
         List<String> items = new ArrayList<>();
         for (Coffee c : cart) items.add(c.getName());
 
-        Order order = new Order(customer.getUsername(), items, cartTotal);
+        Order order = new Order(customer.getUsername(), items, customer.getCartTotal());
 
-        // Add to main Database (for analytics & persistence)
+        // Add to database and queue
         Database.addOrder(order);  
+        customer.recordOrder(order);  // updates wallet, stamps, totalOrders, totalSpent
+        customer.deductFromWallet(customer.getCartTotal());
 
-        // Deduct wallet and add stamp
-        customer.deductFromWallet(cartTotal);
-        customer.addStamp();
-
-        // Add to brewing queue
         OrderQueue.addOrder(order);
 
-        // Reset cart
-        cart.clear();
-        cartTotal = 0;
+        // Clear cart after checkout
+        customer.clearCart();
 
         System.out.println("Order placed! Admin will brew it soon.");
     }

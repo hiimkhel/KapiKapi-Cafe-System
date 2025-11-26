@@ -110,6 +110,10 @@ public class Database {
         }
     }
 
+    // ==========================
+    // CUSTOMER METHODS
+    // ==========================
+
     public static void registerCustomer(Customer c) {
         customers.put(c.getUsername(), c);
         saveCustomers();
@@ -129,6 +133,13 @@ public class Database {
 
     public static Customer findCustomerByUsername(String username) {
         return customers.get(username);
+    }
+
+    public static void updateCustomer(Customer customer) {
+         if (customer != null && customers.containsKey(customer.getUsername())) {
+            customers.put(customer.getUsername(), customer);
+            saveCustomers();
+        }
     }
 
     // ==========================

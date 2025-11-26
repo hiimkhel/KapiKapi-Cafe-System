@@ -3,6 +3,7 @@ package menus.submenus.customer;
 import models.Customer;
 import utils.MenuNavigator;
 import controllers.CustomerController;
+import database.Database;
 
 public class ProfileMenu {
 
@@ -50,14 +51,16 @@ public class ProfileMenu {
 
     private void stampCardMenu() {
         MenuNavigator.clearScreen();
+        Customer freshCustomer = Database.findCustomerByUsername(customer.getUsername());
         System.out.println("=== Stamp Card ===");
-        System.out.println("Stamps: " + customer.getStampCount() + " / 10");
+        System.out.println("Stamps: " + freshCustomer.getStampCount() + " / 10");
 
-        if (CustomerController.canRedeemCoffee(customer)) {
+        if (CustomerController.canRedeemCoffee(freshCustomer)) {
             System.out.println("Eligible for FREE coffee! Redeem? (Y/N)");
             if (MenuNavigator.getInput().equalsIgnoreCase("y")) {
-                CustomerController.redeemFreeCoffee(customer);
-                System.out.println("Coffee redeemed! Stamps remaining: " + customer.getStampCount());
+                CustomerController.redeemFreeCoffee(freshCustomer);
+                Database.updateCustomer(freshCustomer); // persist after redemption
+                System.out.println("Coffee redeemed! Stamps remaining: " + freshCustomer.getStampCount());
             }
         }
 
