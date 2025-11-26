@@ -38,7 +38,8 @@ public class CheckOrdersMenu {
     // =============================
     private void showPendingOrders() {
         MenuNavigator.clearScreen();
-        System.out.println("=== Pending Orders ===\n");
+        MenuNavigator.printHeaderCentered();
+        MenuNavigator.printBorder();
 
         var pending = OrderQueue.getPendingOrders().stream()
                 .filter(o -> o.getCustomerName().equals(customer.getUsername()))
@@ -61,7 +62,8 @@ public class CheckOrdersMenu {
     // =============================
     private void showOrderHistory() {
         MenuNavigator.clearScreen();
-        System.out.println("=== Your Order History ===\n");
+        MenuNavigator.printHeaderCentered();
+        MenuNavigator.printBorder();
 
         if (customer.getOrderHistory().isEmpty()) {
             System.out.println("No past orders.");

@@ -16,7 +16,8 @@ public class WrappedPage {
 
     public void show() {
         MenuNavigator.clearScreen();
-        System.out.println("=== KapiKapi Wrapped ===\n");
+        MenuNavigator.printHeaderCentered();
+        MenuNavigator.printBorder();
         System.out.println("Hello, " + customer.getUsername() + "!\n");
 
         List<Order> orders = customer.getOrderHistory();

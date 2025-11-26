@@ -40,6 +40,9 @@ public class OrderMenu {
     // 1. BROWSE MENU
     // ============================================================
     private void browseMenu() {
+        MenuNavigator.clearScreen();
+        MenuNavigator.printHeaderCentered();
+        MenuNavigator.printBorder();
         String[] menuOptions = new String[coffeeList.size() + 1];
         for (int i = 0; i < coffeeList.size(); i++) {
             Coffee c = coffeeList.get(i);
@@ -63,6 +66,9 @@ public class OrderMenu {
     // 2. VIEW CART
     // ============================================================
     private void viewCart() {
+        MenuNavigator.clearScreen();
+        MenuNavigator.printHeaderCentered();
+        MenuNavigator.printBorder();
         List<Coffee> cart = customer.getCart();
         MenuNavigator.clearScreen();
         System.out.println("=== Your Cart ===");
@@ -96,6 +102,9 @@ public class OrderMenu {
     // 3. CHECKOUT
     // ============================================================
     private void checkout() {
+        MenuNavigator.clearScreen();
+        MenuNavigator.printHeaderCentered();
+        MenuNavigator.printBorder();
         List<Coffee> cart = customer.getCart();
 
         if (cart.isEmpty()) {

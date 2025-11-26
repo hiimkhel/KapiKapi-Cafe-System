@@ -2,48 +2,51 @@ package menus;
 
 import models.Customer;
 import utils.ConsoleUtils;
-public class MainMenu extends BaseMenu {
+import utils.MenuNavigator;
 
-    public MainMenu() {
-        this.title = "Welcome to our Cafe";
-        this.options = new String[]{"Customer Login", "Admin Login", "Exit"};
-    }
+public class MainMenu {
 
-    @Override
-    protected boolean handleSelection(int index) {
-        switch (index) {
-            case 0 -> handleCustomerLogin();
-            case 1 -> handleAdminLogin();
-            case 2 -> {
-                System.out.println("Exiting...");
-                waitForEnter();
-                return true; // exit menu
+    public static void show() {
+        String title = "Welcome to our Cafe";
+        String[] options = {"Customer Login", "Admin Login", "Exit"};
+
+        while (true) {
+            int choice = MenuNavigator.navigate(title, options);
+
+            switch (choice) {
+                case 0 -> handleCustomerLogin();
+                case 1 -> handleAdminLogin();
+                case 2, -1 -> {
+                    System.out.println("Exiting...");
+                    MenuNavigator.waitForEnter();
+                    System.exit(0);
+                }
             }
         }
-        return false;
     }
 
-    private void handleCustomerLogin() {
+    private static void handleCustomerLogin() {
         AuthMenu authMenu = new AuthMenu();
-        Customer loggedInCustomer = authMenu.show(); // handles login/register with password
+        Customer loggedInCustomer = authMenu.show();
 
         if (loggedInCustomer != null) {
             ConsoleUtils.printCentered("Customer login successful: " + loggedInCustomer.getUsername());
-            new CustomerMenu(loggedInCustomer).show(); // pass customer object
+            new CustomerMenu(loggedInCustomer).show();
         } else {
-            System.out.println("Returning to main menu...");
-            waitForEnter();
+            ConsoleUtils.printCentered("Returning to main menu...");
+            MenuNavigator.waitForEnter();
         }
     }
 
-    private void handleAdminLogin() {
-        ConsoleUtils.clearScreen();
-        printHeaderCentered();
+    private static void handleAdminLogin() {
         int attempts = 0;
 
         while (attempts < 3) {
+            MenuNavigator.clearScreen();
+            MenuNavigator.printHeaderCentered();
+
             System.out.print("\t\t\t\tEnter admin password: ");
-            String password = scanner.nextLine().trim();
+            String password = MenuNavigator.getInput().trim();
 
             if (password.isEmpty()) {
                 ConsoleUtils.printCentered("Password cannot be empty.\n");
@@ -58,30 +61,10 @@ public class MainMenu extends BaseMenu {
         }
 
         ConsoleUtils.printCentered("Too many failed attempts. Returning to main menu...");
-        waitForEnter();
+        MenuNavigator.waitForEnter();
     }
 
-    private void waitForEnter() {
-        ConsoleUtils.printCentered("Press Enter to continue...");
-        scanner.nextLine();
-    }
-
-    public static void printHeaderCentered() {
-        String[] lines = {
-            "██╗  ██╗ █████╗ ██████╗ ██╗██╗  ██╗ █████╗ ██████╗ ██╗     ██████╗ █████╗ ███████╗███████╗",
-            "██║ ██╔╝██╔══██╗██╔══██╗██║██║ ██╔╝██╔══██╗██╔══██╗██║    ██╔════╝██╔══██╗██╔════╝██╔════╝",
-            "█████╔╝ ███████║██████╔╝██║█████╔╝ ███████║██████╔╝██║    ██║     ███████║█████╗  █████╗  ",
-            "██╔═██╗ ██╔══██║██╔═══╝ ██║██╔═██╗ ██╔══██║██╔═══╝ ██║    ██║     ██╔══██║██╔══╝  ██╔══╝  ",
-            "██║  ██╗██║  ██║██║     ██║██║  ██╗██║  ██║██║     ██║    ╚██████╗██║  ██║██║     ███████╗",
-            "╚═╝  ╚═╝╚═╝  ╚═╝╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝     ╚═╝     ╚═════╝╚═╝  ╚═╝╚═╝     ╚══════╝",
-            "======================================================================================================================="
-        };
-
-        int width = 120; // <-- Change depending on your terminal width
-
-        for (String line : lines) {
-            int padding = (width - line.length()) / 2;
-            System.out.println(" ".repeat(Math.max(0, padding)) + line);
-        }
+    public static void main(String[] args) {
+        show();
     }
 }

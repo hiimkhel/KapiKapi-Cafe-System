@@ -35,6 +35,8 @@ public class ProfileMenu {
 
     private void walletMenu() {
         MenuNavigator.clearScreen();
+        MenuNavigator.printHeaderCentered();
+        MenuNavigator.printBorder();
         System.out.println("=== Wallet ===");
         System.out.println("Balance: ₱" + customer.getWalletBalance());
         System.out.println("\nTop-up? (Y/N)");
@@ -51,6 +53,8 @@ public class ProfileMenu {
 
     private void stampCardMenu() {
         MenuNavigator.clearScreen();
+        MenuNavigator.printHeaderCentered();
+        MenuNavigator.printBorder();
         Customer freshCustomer = Database.findCustomerByUsername(customer.getUsername());
         System.out.println("=== Stamp Card ===");
         System.out.println("Stamps: " + freshCustomer.getStampCount() + " / 10");
@@ -69,6 +73,8 @@ public class ProfileMenu {
 
     private void achievementsMenu() {
         MenuNavigator.clearScreen();
+        MenuNavigator.printHeaderCentered();
+        MenuNavigator.printBorder();
         System.out.println("=== Achievements ===");
         System.out.println("Total Orders  : " + CustomerController.getTotalOrders(customer));
         System.out.println("Total Spent   : ₱" + CustomerController.getTotalSpent(customer));
