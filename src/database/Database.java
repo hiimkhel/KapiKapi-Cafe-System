@@ -9,20 +9,17 @@ public class Database {
 
     // ====== CUSTOMER DATABASE ======
     private static final String EMPLOYEE_FILE = "employees.db";
-    private static Map<String, Employee> employees = new HashMap<>();
+    private static final String MENU_FILE = "menu.db";
     private static final String CUSTOMER_FILE = "customers.db";
     private static final String ORDER_FILE = "orders.db";
     private static Map<String, Customer> customers = new HashMap<>();
 
     // ====== EMPLOYEE DATABASE ======
-    // private static final List<Employee> employees = new ArrayList<>();
-
+    private static Map<String, Employee> employees = new HashMap<>();
     // ====== MENU / INVENTORY DATABASE ======
     private static final List<Coffee> menuItems = new ArrayList<>();
-
     // ====== ORDERS DATABASE ======
     private static final List<Order> orders = new ArrayList<>();
-
     // ====== ORDER QUEUE FOR BREWING ======
     private static final Queue<Order> brewQueue = new LinkedList<>();
 
@@ -31,14 +28,7 @@ public class Database {
         loadCustomers(); // load persisted customers
         loadOrders();
         loadEmployees();
-        // Sample menu items
-        menuItems.add(new Coffee("Americano", 80, 10));
-        menuItems.add(new Coffee("Latte", 120, 8));
-        menuItems.add(new Coffee("Cappuccino", 110, 7));
-        menuItems.add(new Coffee("Mocha", 130, 5));
-
-        // Sample employee
-        // employees.add(new Employee("admin", "admin123", "Admin"));
+        loadMenu();
     }
 
     // ==========================
@@ -67,6 +57,31 @@ public class Database {
             out.writeObject(orders);
         } catch (Exception e) {
             System.out.println("Error saving orders: " + e.getMessage());
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private static void loadMenu() {
+        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(MENU_FILE))) {
+            List<Coffee> loaded = (List<Coffee>) in.readObject();
+            menuItems.clear();
+            menuItems.addAll(loaded);
+
+        } catch (Exception e) {
+            if (e instanceof FileNotFoundException) {
+                System.out.println("menu.db not found — creating default menu...");
+            } else {
+                System.out.println("Error loading menu: " + e.getMessage());
+            }
+
+            // Create default menu
+            menuItems.clear();
+            menuItems.add(new Coffee("Americano", 80, 10));
+            menuItems.add(new Coffee("Latte", 120, 8));
+            menuItems.add(new Coffee("Cappuccino", 110, 7));
+            menuItems.add(new Coffee("Mocha", 130, 5));
+
+            saveMenu();
         }
     }
 
@@ -145,12 +160,21 @@ public class Database {
     // ==========================
     // MENU METHODS
     // ==========================
+    private static void saveMenu() {
+        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(MENU_FILE))) {
+            out.writeObject(menuItems);
+        } catch (Exception e) {
+            System.out.println("Error saving menu: " + e.getMessage());
+        }
+    }
+
     public static List<Coffee> getMenuItems() {
         return menuItems;
     }
 
     public static void addMenuItem(Coffee m) {
         menuItems.add(m);
+        saveMenu();
     }
 
     public static Coffee findMenuItem(String name) {
@@ -160,9 +184,27 @@ public class Database {
         return null;
     }
 
+    public static void removeMenuItem(int index) {
+        if (index >= 0 && index < menuItems.size()) {
+            menuItems.remove(index);
+            saveMenu(); // >>> NEW
+        }
+    }
+
+       public static void updateMenuItem(int index, String name, int price, int stock) {
+        if (index >= 0 && index < menuItems.size()) {
+            Coffee c = menuItems.get(index);
+            c.setName(name);
+            c.setPrice(price);
+            c.setStock(stock);
+            saveMenu(); // >>> NEW
+        }
+    }
+
     public static void updateInventory(String itemName, int newStock) {
         Coffee m = findMenuItem(itemName);
         if (m != null) m.setStock(newStock);
+        saveMenu();
     }
 
     // ==========================

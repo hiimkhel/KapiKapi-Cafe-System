@@ -3,6 +3,8 @@ package models;
 import java.io.Serializable;
 
 public class Coffee implements Serializable {
+    private static final long serialVersionUID = 1L; // <--- ADD THIS
+    
     private String name;
     private int price;
     private int stock; // number of cups available
