@@ -43,23 +43,32 @@ public class OrderMenu {
         MenuNavigator.clearScreen();
         MenuNavigator.printHeaderCentered();
         MenuNavigator.printBorder();
+
         String[] menuOptions = new String[coffeeList.size() + 1];
         for (int i = 0; i < coffeeList.size(); i++) {
             Coffee c = coffeeList.get(i);
-            menuOptions[i] = c.getName() + " - ₱" + c.getPrice();
+            // Display with stock in brackets and dot leaders for price alignment
+            menuOptions[i] = c.getName() + " " 
+                            + ".".repeat(Math.max(0, 25 - c.getName().length())) 
+                            + " ₱" + c.getPrice() 
+                            + "   [" + c.getStock() + " cups left]";
         }
-        menuOptions[menuOptions.length - 1] = "Back";
+        menuOptions[menuOptions.length - 1] = "[ Back ]";
 
         while (true) {
-            int choice = MenuNavigator.navigate("Coffee Menu", menuOptions);
+            int choice = MenuNavigator.navigate("BROWSE MENU", menuOptions);
             if (choice == menuOptions.length - 1) break;
 
             Coffee selected = coffeeList.get(choice);
-            customer.addToCart(selected); // automatically updates database
+            customer.addToCart(selected); // logic remains the same
 
             System.out.println(selected.getName() + " added to cart! (₱" + selected.getPrice() + ")");
             MenuNavigator.waitForEnter();
         }
+
+        // Footer instruction for navigation
+        System.out.println("\n────────────────────────────────────────");
+        System.out.println("Use W/S to navigate ↑↓, Enter to add to cart, 0 to go back");
     }
 
     // ============================================================
