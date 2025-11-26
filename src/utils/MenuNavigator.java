@@ -175,7 +175,7 @@ public class MenuNavigator {
     }
     public static void printBorder(){
         System.out.println("=======================================================================================================================");
-    }
+    }                         
     
 }
 
