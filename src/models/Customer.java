@@ -17,6 +17,10 @@ public class Customer implements Serializable {
 
     private List<Order> orderHistory = new ArrayList<>();
 
+    // Cart
+    private List<Coffee> cart;
+    private int cartTotal = 0;
+
     public Customer(String username, String password) {
         this.username = username;
         this.password = password;
@@ -24,6 +28,7 @@ public class Customer implements Serializable {
         this.stampCount = 0;
         this.totalOrders = 0;
         this.totalSpent = 0;
+        this.cart = new ArrayList<>(); // initialize cart here
     }
 
     // ====== Getters ======
@@ -82,4 +87,37 @@ public class Customer implements Serializable {
         }
         return completed;
     }
+
+    // CART METHODS
+    public List<Coffee> getCart() {
+        if (cart == null) {
+            cart = new ArrayList<>();
+        }
+        return cart;
+    }
+
+    public int getCartTotal() {
+        return cartTotal;
+    }
+
+    public void addToCart(Coffee coffee) {
+        if (cart == null) cart = new ArrayList<>();
+        cart.add(coffee);
+        cartTotal += coffee.getPrice();
+    }
+
+    public Coffee removeFromCart(int index) {
+        if (index >= 0 && index < cart.size()) {
+            Coffee removed = cart.remove(index);
+            cartTotal -= removed.getPrice();
+            return removed;
+        }
+        return null;
+    }
+
+    public void clearCart() {
+        cart.clear();
+        cartTotal = 0;
+    }
+
 }

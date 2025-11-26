@@ -17,12 +17,13 @@ public class OrderMenu {
     private final String[] options = { "Browse Menu", "Cart", "Checkout", "Back" };
 
     private final List<Coffee> coffeeList = CoffeeMenu.getCoffees();
-    private final List<Coffee> cart = new ArrayList<>();
+    
     private int cartTotal = 0;
 
     public OrderMenu(Customer customer) {
         this.customer = customer;
     }
+
 
     public void show() {
         while (true) {
@@ -56,8 +57,8 @@ public class OrderMenu {
             if (choice == menuOptions.length - 1) break;
 
             Coffee selected = coffeeList.get(choice);
-            cart.add(selected);
-            cartTotal += selected.getPrice();
+            customer.addToCart(selected);
+
 
             System.out.println(selected.getName() + " added to cart! (₱" + selected.getPrice() + ")");
             MenuNavigator.waitForEnter();
@@ -68,6 +69,7 @@ public class OrderMenu {
     // 2. VIEW CART
     // ============================================================
     private void viewCart() {
+        List<Coffee> cart = customer.getCart();
         MenuNavigator.clearScreen();
         System.out.println("=== Your Cart ===");
 
@@ -81,7 +83,7 @@ public class OrderMenu {
             System.out.println((i + 1) + ". " + c.getName() + " - ₱" + c.getPrice());
         }
 
-        System.out.println("\nTotal: ₱" + cartTotal);
+        System.out.println("\nTotal: ₱" + customer.getCartTotal());
         System.out.println("Remove an item? (Enter number or 0 to go back)");
 
         int removeChoice = MenuNavigator.getIntInput();
@@ -91,8 +93,7 @@ public class OrderMenu {
             return;
         }
 
-        Coffee removed = cart.remove(removeChoice - 1);
-        cartTotal -= removed.getPrice();
+        Coffee removed = customer.removeFromCart(removeChoice - 1);
         System.out.println(removed.getName() + " removed from cart.");
     }
 
@@ -100,6 +101,8 @@ public class OrderMenu {
     // 3. CHECKOUT
     // ============================================================
     private void checkout() {
+        List<Coffee> cart = customer.getCart();
+
         if (cart.isEmpty()) {
             System.out.println("Your cart is empty!");
             return;
