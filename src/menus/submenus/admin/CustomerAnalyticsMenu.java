@@ -23,9 +23,19 @@ public class CustomerAnalyticsMenu {
             int choice = MenuNavigator.navigate("=== Customer Analytics ===", options);
 
             switch (choice) {
-                case 0 -> controller.displayTopCustomers();
-                case 1 -> controller.displayAllOrders();
-                case 2 -> controller.displayCustomerSummary();
+                case 0 -> {
+                    controller.displayTopCustomers();
+                    MenuNavigator.waitForEnter();
+
+                }
+                case 1 -> {
+                    controller.displayAllOrders();
+                    MenuNavigator.waitForEnter();
+                }
+                case 2 -> {
+                    controller.displayCustomerSummary();
+                    MenuNavigator.waitForEnter();
+                }
                 case 3 -> { return; }
             }
         }
