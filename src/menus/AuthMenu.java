@@ -30,7 +30,9 @@ public class AuthMenu {
                     Customer customer = CustomerController.register();
                     if (customer != null) return customer;
                 }
-                case 2 -> System.exit(0);
+                case 2 -> {
+                    return null;
+                }
             }
 
             MenuNavigator.waitForEnter();
