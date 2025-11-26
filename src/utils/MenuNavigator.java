@@ -37,8 +37,8 @@ public class MenuNavigator {
         // Move cursor UP 2 lines and RIGHT to just after "Input: "
         System.out.print("\033[2A");  // move cursor up 2 lines (above bottom border)
         System.out.print("\r");       // go to start of line
-        System.out.print("|Input: "); // print up to Input: again
-String input = scanner.nextLine().toLowerCase();
+        System.out.print("| >>> "); // print up to Input: again
+        String input = scanner.nextLine().toLowerCase();
             lastInput = input;
 
             switch (input) {
@@ -71,8 +71,8 @@ String input = scanner.nextLine().toLowerCase();
         int leftWidth = (int) (WIDTH * 0.60);
         int rightWidth = WIDTH - leftWidth;
 
-        String leftLabel = "Input: ";
-        String instructions = "W/S Key: Navigate | Enter: Select";
+        String leftLabel = ">>>";
+        String instructions = "| W/S Key: Navigate | Enter: Select";
 
         // Compute empty space after Input:
         int leftRemaining = leftWidth - leftLabel.length();

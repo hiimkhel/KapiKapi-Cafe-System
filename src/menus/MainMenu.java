@@ -1,7 +1,7 @@
 package menus;
 
 import models.Customer;
-
+import utils.ConsoleUtils;
 public class MainMenu extends BaseMenu {
 
     public MainMenu() {
@@ -28,7 +28,7 @@ public class MainMenu extends BaseMenu {
         Customer loggedInCustomer = authMenu.show(); // handles login/register with password
 
         if (loggedInCustomer != null) {
-            System.out.println("Customer login successful: " + loggedInCustomer.getUsername());
+            ConsoleUtils.printCentered("Customer login successful: " + loggedInCustomer.getUsername());
             new CustomerMenu(loggedInCustomer).show(); // pass customer object
         } else {
             System.out.println("Returning to main menu...");
@@ -37,30 +37,51 @@ public class MainMenu extends BaseMenu {
     }
 
     private void handleAdminLogin() {
+        ConsoleUtils.clearScreen();
+        printHeaderCentered();
         int attempts = 0;
 
         while (attempts < 3) {
-            System.out.print("Enter admin password: ");
+            System.out.print("\t\t\t\tEnter admin password: ");
             String password = scanner.nextLine().trim();
 
             if (password.isEmpty()) {
-                System.out.println("Password cannot be empty.\n");
+                ConsoleUtils.printCentered("Password cannot be empty.\n");
             } else if (password.equals("admin123")) {
-                System.out.println("Admin login successful!");
+                ConsoleUtils.printCentered("Admin login successful!");
                 new AdminMenu().show();
                 return;
             } else {
                 attempts++;
-                System.out.println("Incorrect admin password. Attempts left: " + (3 - attempts) + "\n");
+                ConsoleUtils.printCentered("Incorrect admin password. Attempts left: " + (3 - attempts) + "\n");
             }
         }
 
-        System.out.println("Too many failed attempts. Returning to main menu...");
+        ConsoleUtils.printCentered("Too many failed attempts. Returning to main menu...");
         waitForEnter();
     }
 
     private void waitForEnter() {
-        System.out.println("Press Enter to continue...");
+        ConsoleUtils.printCentered("Press Enter to continue...");
         scanner.nextLine();
+    }
+
+    public static void printHeaderCentered() {
+        String[] lines = {
+            "██╗  ██╗ █████╗ ██████╗ ██╗██╗  ██╗ █████╗ ██████╗ ██╗     ██████╗ █████╗ ███████╗███████╗",
+            "██║ ██╔╝██╔══██╗██╔══██╗██║██║ ██╔╝██╔══██╗██╔══██╗██║    ██╔════╝██╔══██╗██╔════╝██╔════╝",
+            "█████╔╝ ███████║██████╔╝██║█████╔╝ ███████║██████╔╝██║    ██║     ███████║█████╗  █████╗  ",
+            "██╔═██╗ ██╔══██║██╔═══╝ ██║██╔═██╗ ██╔══██║██╔═══╝ ██║    ██║     ██╔══██║██╔══╝  ██╔══╝  ",
+            "██║  ██╗██║  ██║██║     ██║██║  ██╗██║  ██║██║     ██║    ╚██████╗██║  ██║██║     ███████╗",
+            "╚═╝  ╚═╝╚═╝  ╚═╝╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝     ╚═╝     ╚═════╝╚═╝  ╚═╝╚═╝     ╚══════╝",
+            "======================================================================================================================="
+        };
+
+        int width = 120; // <-- Change depending on your terminal width
+
+        for (String line : lines) {
+            int padding = (width - line.length()) / 2;
+            System.out.println(" ".repeat(Math.max(0, padding)) + line);
+        }
     }
 }
