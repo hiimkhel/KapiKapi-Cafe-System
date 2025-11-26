@@ -41,21 +41,31 @@ public class CheckOrdersMenu {
         MenuNavigator.clearScreen();
         MenuNavigator.printHeaderCentered();
         MenuNavigator.printBorder();
+        ConsoleUtils.printCentered("P E N D I N G   O R D E R S ");
+        System.out.println("\t\t\tUSER: " + customer.getUsername());
+        ConsoleUtils.printCentered("──────────────────────────────────────────────────────────────────────────");
+        System.out.println();
 
-        var pending = OrderQueue.getPendingOrders().stream()
+        var pendingOrders = OrderQueue.getPendingOrders().stream()
                 .filter(o -> o.getCustomerName().equals(customer.getUsername()))
                 .toList();
 
-        if (pending.isEmpty()) {
-            System.out.println("No pending orders.");
-            return;
+        if (pendingOrders.isEmpty()) {
+            ConsoleUtils.printCentered("You have no pending orders.");
+            System.out.println();
+        } else {
+            for (Order order : pendingOrders) {
+                ConsoleUtils.printCentered("Order #" + order.getId());
+                System.out.println("\t\t\t\tItems:");
+                for (String item : order.getItems()) {
+                    System.out.println("\t\t\t\t  • " + item);
+                }
+                System.out.println("\t\t\t\tTotal: ₱" + order.getTotalPrice());
+                ConsoleUtils.printCentered("──────────────────────────────────────────────────────────────────────────");
+            }
         }
 
-        pending.forEach(order -> {
-            System.out.println("• Items: " + order.getItems());
-            System.out.println("  Total: ₱" + order.getTotalPrice());
-            System.out.println();
-        });
+        printFooter();
     }
 
     // =============================
