@@ -3,6 +3,7 @@ package menus.submenus.customer;
 import controllers.OrderQueue;
 import models.Customer;
 import models.Order;
+import utils.ConsoleUtils;
 import utils.MenuNavigator;
 
 public class CheckOrdersMenu {
@@ -61,20 +62,40 @@ public class CheckOrdersMenu {
     // ORDER HISTORY (from Customer)
     // =============================
     private void showOrderHistory() {
-        MenuNavigator.clearScreen();
+        ConsoleUtils.clearScreen();
+        MenuNavigator.printBorder();
         MenuNavigator.printHeaderCentered();
         MenuNavigator.printBorder();
+        ConsoleUtils.printCentered("                  O R D E R   H I S T O R Y                  ");
+        System.out.println("\t\t\tUSER: " + customer.getUsername());
+        ConsoleUtils.printCentered("──────────────────────────────────────────────────────────────────────────");
+        System.out.println();
 
-        if (customer.getOrderHistory().isEmpty()) {
-            System.out.println("No past orders.");
-            return;
-        }
+        var orderHistory = customer.getOrderHistory();
 
-        for (Order order : customer.getOrderHistory()) {
-            System.out.println("• Items: " + order.getItems());
-            System.out.println("  Total Paid: ₱" + order.getTotalPrice());
-            System.out.println("  Brewed: " + (order.isBrewed() ? "✔" : "x"));
+        if (orderHistory.isEmpty()) {
+            ConsoleUtils.printCentered("No past orders found.");
             System.out.println();
+        } else {
+            for (Order order : orderHistory) {
+                ConsoleUtils.printCentered("Order #" + order.getId());
+                System.out.println("\t\t\t\tItems:");
+                for (String item : order.getItems()) {
+                    System.out.println(" \t\t\t\t • " + item);
+                }
+                System.out.println("\t\t\t\tTotal Paid: ₱" + order.getTotalPrice());
+                System.out.println("\t\t\t\tBrewed Status: " + (order.isBrewed() ? "✔ Brewed" : "✗ Pending"));
+                ConsoleUtils.printCentered("──────────────────────────────────────────────────────────────────────────");
+            }
         }
+
+        printFooter();
     }
+
+    // Optional footer method
+    private void printFooter() {
+        ConsoleUtils.printCentered("Thank you for choosing KapiKapi Café!");
+        ConsoleUtils.printCentered("══════════════════════════════════════════════════════════════════════════");
+    }
+
 }
