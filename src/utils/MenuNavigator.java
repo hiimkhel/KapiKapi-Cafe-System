@@ -5,36 +5,91 @@ import java.util.Scanner;
 public class MenuNavigator {
 
     private static final Scanner scanner = new Scanner(System.in);
+    private static final int WIDTH = 120; // Total menu width
 
     public static int navigate(String title, String[] options) {
         int selected = 0;
+        String lastInput = "";
 
         while (true) {
             clearScreen();
 
-            System.out.println("=== " + title + " ===\n");
+            printTitleBorder(title);
+            System.out.println();
 
+            // Print centered menu options
             for (int i = 0; i < options.length; i++) {
-                if (i == selected)
-                    System.out.println("> " + options[i]);
-                else
-                    System.out.println("  " + options[i]);
+                boolean highlight = (i == selected);
+                String text = highlight
+                        ? ">> " + options[i] + " <<"
+                        : options[i];
+                printCentered(text);
             }
 
-            System.out.println("\nUse W/S to navigate, Enter to select.");
-
-            String input = scanner.nextLine().toLowerCase();
+            System.out.println();
+            printFooter();
+            
+        // Move cursor UP 2 lines and RIGHT to just after "Input: "
+        System.out.print("\033[2A");  // move cursor up 2 lines (above bottom border)
+        System.out.print("\r");       // go to start of line
+        System.out.print("|Input: "); // print up to Input: again
+String input = scanner.nextLine().toLowerCase();
+            lastInput = input;
 
             switch (input) {
                 case "w" -> selected = (selected - 1 + options.length) % options.length;
                 case "s" -> selected = (selected + 1) % options.length;
-                case "" -> {
-                    return selected;
-                }
-                default -> System.out.println("Invalid input.");
+                case ""  -> { return selected; }
+                case "q" -> { return -1; } // optional quit
+                default  -> { }
             }
         }
     }
+
+    // -------------------------------------------------------
+    // ---------------------- HELPERS ------------------------
+    // -------------------------------------------------------
+
+    private static void printCentered(String text) {
+        int padding = (WIDTH - text.length()) / 2;
+        System.out.println(" ".repeat(Math.max(0, padding)) + text);
+    }
+
+    private static void printTitleBorder(String title) {
+        int total = WIDTH - title.length() - 2;
+        int left = total / 2;
+        int right = total - left;
+        System.out.println("=".repeat(left) + " " + title + " " + "=".repeat(right));
+    }
+
+    private static void printFooter() {
+        int leftWidth = (int) (WIDTH * 0.60);
+        int rightWidth = WIDTH - leftWidth;
+
+        String leftLabel = "Input: ";
+        String instructions = "W/S Key: Navigate | Enter: Select";
+
+        // Compute empty space after Input:
+        int leftRemaining = leftWidth - leftLabel.length();
+        if (leftRemaining < 0) leftRemaining = 0;
+
+        // Compute empty space for right side
+        int rightRemaining = rightWidth - instructions.length();
+        if (rightRemaining < 0) rightRemaining = 0;
+
+        String leftPad = " ".repeat(leftRemaining);
+        String rightPad = " ".repeat(rightRemaining);
+
+        System.out.println("+" + "-".repeat(WIDTH) + "+");
+        System.out.print("|" + leftLabel + leftPad + instructions + rightPad + "|");
+        System.out.println();
+        System.out.println("+" + "-".repeat(WIDTH) + "+");
+    }
+
+
+    // -------------------------------------------------------
+    // ------------------- REUSED METHODS --------------------
+    // -------------------------------------------------------
 
     public static void waitForEnter() {
         System.out.println("\nPress Enter to continue...");
@@ -46,12 +101,10 @@ public class MenuNavigator {
         System.out.flush();
     }
 
-    // NEW — safe public input method
     public static String getInput() {
         return scanner.nextLine();
     }
 
-    
     public static int getIntInput() {
         while (true) {
             try {
@@ -63,4 +116,3 @@ public class MenuNavigator {
         }
     }
 }
-
