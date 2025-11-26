@@ -15,7 +15,7 @@ public class AdminMenu {
 
     public void show() {
         while (true) {
-            int choice = MenuNavigator.navigate("==== Admin Dashboard", options);
+            int choice = MenuNavigator.navigate("Admin Dashboard", options);
 
             switch (choice) {
                 case 0 -> new OrdersDashboardMenu().show();
