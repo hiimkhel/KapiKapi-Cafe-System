@@ -74,7 +74,11 @@ public class MenuNavigator {
                 case "s" -> selected = (selected + 1) % options.length;
                 case ""  -> { return selected; }
                 case "q" -> { return -1; } // optional quit
-                default  -> { }
+                default  -> { 
+                    // User-friendly error message
+                    System.out.println("\n[!] Invalid input! Use W/S to navigate or Enter to select. Press Enter to continue...");
+                    scanner.nextLine(); // wait for user acknowledgment
+                }
             }
         }
     }
@@ -100,7 +104,7 @@ public class MenuNavigator {
         int rightWidth = WIDTH - leftWidth;
 
         String leftLabel = ">>>";
-        String instructions = "| W/S Key: Navigate | Enter: Select";
+        String instructions = "| W/S Key: Navigate | Enter: Select | Q: Quit";
 
         // Compute empty space after Input:
         int leftRemaining = leftWidth - leftLabel.length();
