@@ -37,7 +37,7 @@ public class CustomerController {
     }
 
     public static Customer register() {
-        System.out.println(centerText("=== CUSTOMER REGISTRATION ==="));
+        System.out.println(centerText("CUSTOMER REGISTRATION"));
         System.out.print(centerText("Create Username: "));
         String username = scanner.nextLine().trim();
 

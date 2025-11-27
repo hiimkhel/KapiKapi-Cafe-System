@@ -122,7 +122,7 @@ public class ProfileMenu {
 
         // ========================= STAMP ROWS =========================
         String filledStamp = "[" + GREEN + "ʕ•ᴥ•ʔ" + RESET + "]";  // 7 chars visually
-        String emptyStamp  = "[" + GRAY + "   " + RESET + "]";    // 7 chars visually
+        String emptyStamp  = "[" + GRAY + "     " + RESET + "]";    // 7 chars visually
 
 
          // Build first row
@@ -132,7 +132,7 @@ public class ProfileMenu {
             else firstRow.append(emptyStamp);
             firstRow.append(" "); // space between stamps
         }
-        firstRow.append("                ║");
+        firstRow.append("          ║");
         ConsoleUtils.printCentered(firstRow.toString());
 
         // Build second row
@@ -142,7 +142,7 @@ public class ProfileMenu {
             else secondRow.append(emptyStamp);
             secondRow.append(" ");
         }
-        secondRow.append("                    ║");
+        secondRow.append("          ║");
         ConsoleUtils.printCentered(secondRow.toString());
 
         ConsoleUtils.printCentered("╚════════════════════════════════════════════════════════════════╝");
