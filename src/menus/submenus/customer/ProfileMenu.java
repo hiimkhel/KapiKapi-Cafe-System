@@ -9,6 +9,7 @@ import database.Database;
 public class ProfileMenu {
 
     private final Customer customer;
+    private final int MAX_STAMPS = 10;
 
     private final String[] options = {
         "Wallet",
@@ -26,8 +27,10 @@ public class ProfileMenu {
             int choice = MenuNavigator.navigate("Profile & Rewards - " + customer.getUsername(), options, true);
 
             switch (choice) {
-                case 0 -> walletMenu();
-                case 1 -> stampCardMenu();
+                case 0 -> {walletMenu();}
+                case 1 -> {stampCardMenu();
+                    MenuNavigator.clearScreen();
+                }
                 case 2 -> achievementsMenu();
                 case 3 -> { return; }
             }
@@ -101,23 +104,53 @@ public class ProfileMenu {
     }
 
     private void stampCardMenu() {
+        final String RESET = "\u001B[0m";
+        final String GREEN = "\u001B[32m";
+        final String GRAY  = "\u001B[37m";
+
         MenuNavigator.clearScreen();
+        MenuNavigator.printBorder();
         MenuNavigator.printHeaderCentered();
         MenuNavigator.printBorder();
-        Customer freshCustomer = Database.findCustomerByUsername(customer.getUsername());
-        System.out.println("=== Stamp Card ===");
-        System.out.println("Stamps: " + freshCustomer.getStampCount() + " / 10");
+        ConsoleUtils.printCentered("╔════════════════════════════════════════════════════════════════╗");
+        ConsoleUtils.printCentered("║                           CAFE MOOLA™                          ║");
+        ConsoleUtils.printCentered("║                           STAMP CARD                           ║");
+        ConsoleUtils.printCentered("╠════════════════════════════════════════════════════════════════╣");
+        ConsoleUtils.printCentered("║ Customer: " + customer.getUsername() 
+                + "                        Stamps: " + customer.getStampCount() + "/" + MAX_STAMPS + "            ║");
+        ConsoleUtils.printCentered("╠════════════════════════════════════════════════════════════════╣");
 
-        if (CustomerController.canRedeemCoffee(freshCustomer)) {
-            System.out.println("Eligible for FREE coffee! Redeem? (Y/N)");
-            if (MenuNavigator.getInput().equalsIgnoreCase("y")) {
-                CustomerController.redeemFreeCoffee(freshCustomer);
-                Database.updateCustomer(freshCustomer); // persist after redemption
-                System.out.println("Coffee redeemed! Stamps remaining: " + freshCustomer.getStampCount());
-            }
+        // ========================= STAMP ROWS =========================
+        String filledStamp = "[" + GREEN + "ʕ•ᴥ•ʔ" + RESET + "]";  // 7 chars visually
+        String emptyStamp  = "[" + GRAY + "   " + RESET + "]";    // 7 chars visually
+
+
+         // Build first row
+        StringBuilder firstRow = new StringBuilder("\t\t\t   ║              ");
+        for (int i = 0; i < 5; i++) {
+            if (i < customer.getStampCount()) firstRow.append(filledStamp);
+            else firstRow.append(emptyStamp);
+            firstRow.append(" "); // space between stamps
         }
+        firstRow.append("                ║");
+        ConsoleUtils.printCentered(firstRow.toString());
 
-        MenuNavigator.waitForEnter();
+        // Build second row
+        StringBuilder secondRow = new StringBuilder("\t\t\t   ║              ");
+        for (int i = 5; i < 10; i++) {
+            if (i < customer.getStampCount()) secondRow.append(filledStamp);
+            else secondRow.append(emptyStamp);
+            secondRow.append(" ");
+        }
+        secondRow.append("                    ║");
+        ConsoleUtils.printCentered(secondRow.toString());
+
+        ConsoleUtils.printCentered("╚════════════════════════════════════════════════════════════════╝");
+
+        // Footer action
+        String[] options = {"Return"};
+        ConsoleUtils.navigateOptionsOnly("Collect all 10 stamps and get a FREE coffee! Keep sipping & smiling ☕", options);
+        
     }
 
     private void achievementsMenu() {
