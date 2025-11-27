@@ -14,8 +14,12 @@ public class MainMenu {
             int choice = MenuNavigator.navigate(title, options, true);
 
             switch (choice) {
-                case 0 -> handleCustomerLogin();
-                case 1 -> handleAdminLogin();
+                case 0 -> {handleCustomerLogin();
+                    MenuNavigator.clearScreen();
+                }
+                case 1 -> {handleAdminLogin();
+                    MenuNavigator.clearScreen();
+                }
                 case 2, -1 -> {
                     System.out.println("Exiting...");
                     MenuNavigator.waitForEnter();
