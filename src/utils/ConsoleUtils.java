@@ -16,4 +16,11 @@ public class ConsoleUtils {
     public static void printCentered(String text) {
         System.out.println(centerText(text));
     }
+
+    // Helper functions to center only the label
+    public static String centerTextInline(String text) {
+        int width = 110;
+        int pad = (width - text.length()) / 2;
+        return " ".repeat(Math.max(0, pad)) + text;
+    }
 }
