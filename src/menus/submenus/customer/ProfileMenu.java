@@ -44,17 +44,22 @@ public class ProfileMenu {
             MenuNavigator.printBorder();
 
             // ========================= WALLET HEADER =========================
-            ConsoleUtils.printCentered("███████╗ █████╗ ██╗      ██████╗ ██╗     ███████╗");
-            ConsoleUtils.printCentered("██╔════╝██╔══██╗██║     ██╔═══██╗██║     ██╔════╝");
-            ConsoleUtils.printCentered("█████╗  ███████║██║     ██║   ██║██║     █████╗  ");
-            ConsoleUtils.printCentered("██╔══╝  ██╔══██║██║     ██║   ██║██║     ██╔══╝  ");
-            ConsoleUtils.printCentered("██║     ██║  ██║███████╗╚██████╔╝███████╗███████╗");
-            ConsoleUtils.printCentered("╚═╝     ╚═╝  ╚═╝╚══════╝ ╚═════╝ ╚══════╝╚══════╝");
+            ConsoleUtils.printCentered("YOUR WALLET");
             ConsoleUtils.printCentered("──────────────────────────────────────────────────────────────");
 
-            // ========================= BALANCE =========================
-            ConsoleUtils.printCentered("Current Wallet Balance: ₱" + customer.getWalletBalance());
-            ConsoleUtils.printCentered("");
+            // ========================= WALLET CARD =========================
+            String nameLine = "Customer: " + customer.getUsername();
+            String balanceLine = "Wallet Balance: ₱" + customer.getWalletBalance();
+
+            int cardWidth = Math.max(nameLine.length(), balanceLine.length()) + 10;
+            String border = "╔" + "═".repeat(cardWidth) + "╗";
+
+            ConsoleUtils.printCentered(border);
+            ConsoleUtils.printCentered("║" + " ".repeat((cardWidth - nameLine.length()) / 2) + nameLine + " ".repeat((cardWidth - nameLine.length() + 1) / 2) + "║");
+            ConsoleUtils.printCentered("║" + " ".repeat((cardWidth - balanceLine.length()) / 2) + balanceLine + " ".repeat((cardWidth - balanceLine.length() + 1) / 2) + "║");
+            ConsoleUtils.printCentered("╚" + "═".repeat(cardWidth) + "╝");
+
+            ConsoleUtils.printCentered(""); // spacing
 
             // ========================= OPTIONS =========================
             for (int i = 0; i < options.length; i++) {
@@ -78,7 +83,8 @@ public class ProfileMenu {
                     }
 
                     // Top-up wallet
-                    ConsoleUtils.printCentered("Enter amount to top-up: ₱");
+                    ConsoleUtils.centerText("──────────────────────────────────────────────────────────────");
+                    System.out.print("\t\t\t\t\tEnter amount to top-up: ₱ ");
                     int amount = MenuNavigator.getIntInput();
                     if (amount <= 0) {
                         ConsoleUtils.printCentered("[!] Invalid amount. Press Enter to continue...");
@@ -87,7 +93,7 @@ public class ProfileMenu {
                     }
 
                     CustomerController.topUpWallet(customer, amount);
-                    ConsoleUtils.printCentered("Wallet successfully topped up! New balance: ₱" + customer.getWalletBalance());
+                    ConsoleUtils.printCentered(">> [!] Wallet successfully topped up!");
                     MenuNavigator.waitForEnter();
                 }
             }
