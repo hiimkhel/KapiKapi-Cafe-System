@@ -24,7 +24,7 @@ public class OrderMenu {
 
     public void show() {
         while (true) {
-            int choice = MenuNavigator.navigate("Order Menu - " + customer.getUsername(), options);
+            int choice = MenuNavigator.navigate("Order Menu - " + customer.getUsername(), options, true);
 
             switch (choice) {
                 case 0 -> browseMenu();
@@ -57,7 +57,7 @@ public class OrderMenu {
         menuOptions[menuOptions.length - 1] = "[ Back ]";
 
         while (true) {
-            int choice = MenuNavigator.navigate("BROWSE MENU", menuOptions);
+            int choice = MenuNavigator.navigate("BROWSE MENU", menuOptions, true);
             if (choice == menuOptions.length - 1) break;
 
             Coffee selected = coffeeList.get(choice);
@@ -80,7 +80,7 @@ public class OrderMenu {
 
         MenuNavigator.printBorder();
         ConsoleUtils.printCentered("                           [YOUR CART]                      ");
-        ConsoleUtils.printCentered("====================================================================");
+        ConsoleUtils.printCentered("──────────────────────────────────────────────────────────────────────────");
 
         if (cart.isEmpty()) {
             ConsoleUtils.printCentered("Your cart is empty.");
@@ -141,58 +141,110 @@ public class OrderMenu {
     // 3. CHECKOUT
     // ============================================================
     private void checkout() {
+        List<Coffee> cart = customer.getCart();
+
         MenuNavigator.clearScreen();
         MenuNavigator.printHeaderCentered();
         MenuNavigator.printBorder();
-        List<Coffee> cart = customer.getCart();
 
         if (cart.isEmpty()) {
-            System.out.println("Your cart is empty!");
+            ConsoleUtils.printCentered("Your cart is empty!");
+            MenuNavigator.waitForEnter();
             return;
         }
 
-        MenuNavigator.clearScreen();
-        System.out.println("=== Checkout ===");
+        // ========================= RECEIPT HEADER =========================
+        ConsoleUtils.printCentered("[ CHECKOUT RECEIPT ]");
+        ConsoleUtils.printCentered("──────────────────────────────────────────────────────────────────────────");
+        ConsoleUtils.printCentered("");
+        System.out.println("\t\t\tCustomer: " + customer.getUsername());
+        ConsoleUtils.printCentered("");
+        ConsoleUtils.printCentered("----------------------------------------------------------------------------");
+        ConsoleUtils.printCentered("ITEM                 PRICE            ");
+        ConsoleUtils.printCentered("---------------------------------------------------------------------------- ");
 
+        // ========================= CART ITEMS =========================
         for (Coffee c : cart) {
-            System.out.println("- " + c.getName() + " - ₱" + c.getPrice());
+            ConsoleUtils.printCentered(String.format(
+                    "%-20s ₱%.2f",
+                    c.getName(),
+                    (double)c.getPrice()
+            ));
         }
 
-        System.out.println("\nTotal: ₱" + customer.getCartTotal());
+        ConsoleUtils.printCentered("----------------------------------------------------------------------------");
+        ConsoleUtils.printCentered(String.format(
+                "TOTAL:                                     ₱%.2f                      ",
+                (double)customer.getCartTotal()
+        ));
+        ConsoleUtils.printCentered("----------------------------------------------------------------------------");
+        ConsoleUtils.printCentered("");
 
-        // Wallet check
+        // ========================= WALLET CHECK =========================
         if (customer.getWalletBalance() < customer.getCartTotal()) {
-            System.out.println("\nInsufficient wallet balance! Please top-up in Profile.");
+            ConsoleUtils.printCentered("Insufficient wallet balance! Please top-up in Profile.");
+            MenuNavigator.waitForEnter();
             return;
         }
 
-        System.out.println("\nConfirm order? (Y/N)");
-        String confirm = MenuNavigator.getInput().toLowerCase();
-        if (!confirm.equals("y")) {
-            System.out.println("Order cancelled.");
+            // ========================= CUSTOM OPTIONS NAVIGATOR =========================
+        int choice = checkoutOptionsNavigator();
+
+        if (choice == 1) { // Cancel
+            ConsoleUtils.printCentered("Order cancelled.");
+            MenuNavigator.waitForEnter();
             return;
         }
 
-        // Create order object
+        // ========================= CREATE ORDER =========================
         List<String> items = new ArrayList<>();
         for (Coffee c : cart) items.add(c.getName());
 
         Order order = new Order(customer.getUsername(), items, customer.getCartTotal());
 
-        // Add to database and queue
-        Database.addOrder(order);  
-        customer.recordOrder(order);  // updates wallet, stamps, totalOrders, totalSpent
+        Database.addOrder(order);
+        customer.recordOrder(order);
         customer.deductFromWallet(customer.getCartTotal());
-
         OrderQueue.addOrder(order);
-
-        // Clear cart after checkout
         customer.clearCart();
 
-        System.out.println("Order placed! Admin will brew it soon.");
+        ConsoleUtils.printCentered("Order placed! Admin will brew it soon.");
+        MenuNavigator.waitForEnter();
     }
 
+    // Helper functions 
+    private int checkoutOptionsNavigator() {
+        String[] options = { "Checkout", "Cancel" };
+        int selected = 0;
 
+        // Print header once
+        System.out.println("\n================================================== Select an option: ===================================================\n");
+
+        while (true) {
+            // Draw options
+            for (int i = 0; i < options.length; i++) {
+                if (i == selected) {
+                    System.out.println("\t\t\t\t\t\t    >> " + options[i] + " <<");
+                } else {
+                    System.out.println("\t\t\t\t\t\t      " + options[i]);
+                }
+            }
+
+            // Prompt
+            System.out.print("\t\t\t| Use W/S to navigate, Enter to select: ");
+            String input = MenuNavigator.getInput().trim().toLowerCase();
+            switch (input) {
+                case "w" -> selected = (selected - 1 + options.length) % options.length;
+                case "s" -> selected = (selected + 1) % options.length;
+                case ""  -> { return selected; }  // Enter
+                default  -> System.out.println("Invalid input! Use W/S or Enter.");
+            }
+
+            // Move cursor UP to redraw the options only
+            System.out.print("\033[" + (options.length + 1) + "A"); // +1 for the prompt line
+            System.out.print("\033[J"); // clear everything below cursor
+        }
+    }
 }
 
 

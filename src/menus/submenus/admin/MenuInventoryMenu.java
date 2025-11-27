@@ -19,7 +19,7 @@ public class MenuInventoryMenu {
 
     public void show() {
         while (true) {
-            int choice = MenuNavigator.navigate("=== Menu & Inventory ===", options);
+            int choice = MenuNavigator.navigate("=== Menu & Inventory ===", options, true);
 
             switch (choice) {
                 case 0 -> viewMenu();

@@ -20,7 +20,7 @@ public class CustomerAnalyticsMenu {
             MenuNavigator.printHeaderCentered();
             MenuNavigator.printBorder();
 
-            int choice = MenuNavigator.navigate("=== Customer Analytics ===", options);
+            int choice = MenuNavigator.navigate("=== Customer Analytics ===", options, true);
 
             switch (choice) {
                 case 0 -> {

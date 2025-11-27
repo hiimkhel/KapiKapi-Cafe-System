@@ -25,7 +25,7 @@ public class EmployeeManagementMenu {
             ConsoleUtils.printCentered("                    [EMPLOYEE MANAGEMENT]                  ");
             ConsoleUtils.printCentered("============================================================");
 
-            int choice = MenuNavigator.navigate("Employee Management", options);
+            int choice = MenuNavigator.navigate("Employee Management", options, true);
 
             switch (choice) {
                 case 0 -> { viewEmployees(); MenuNavigator.waitForEnter(); }
@@ -111,7 +111,7 @@ public class EmployeeManagementMenu {
         String[] empOptions = new String[employees.size() + 1];
         for (int i = 0; i < employees.size(); i++) empOptions[i] = employees.get(i).getUsername();
         empOptions[employees.size()] = "[ Back ]";
-        int choice = MenuNavigator.navigate("Select an employee to update:", empOptions);
+        int choice = MenuNavigator.navigate("Select an employee to update:", empOptions, true);
         if (choice == employees.size()) return; // Back selected
 
         Employee e = employees.get(choice);
@@ -151,7 +151,7 @@ public class EmployeeManagementMenu {
         for (int i = 0; i < employees.size(); i++) empOptions[i] = employees.get(i).getUsername();
         empOptions[employees.size()] = "[ Back ]";
 
-        int choice = MenuNavigator.navigate("Select an employee to remove:", empOptions);
+        int choice = MenuNavigator.navigate("Select an employee to remove:", empOptions, true );
 
         if (choice == employees.size()) return; // Back selected
 

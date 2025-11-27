@@ -22,7 +22,7 @@ public class ProfileMenu {
 
     public void show() {
         while (true) {
-            int choice = MenuNavigator.navigate("Profile & Rewards - " + customer.getUsername(), options);
+            int choice = MenuNavigator.navigate("Profile & Rewards - " + customer.getUsername(), options, true);
 
             switch (choice) {
                 case 0 -> walletMenu();

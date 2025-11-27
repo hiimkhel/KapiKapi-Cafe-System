@@ -11,7 +11,7 @@ public class MainMenu {
         String[] options = {"Customer Login", "Admin Login", "Exit"};
 
         while (true) {
-            int choice = MenuNavigator.navigate(title, options);
+            int choice = MenuNavigator.navigate(title, options, true);
 
             switch (choice) {
                 case 0 -> handleCustomerLogin();

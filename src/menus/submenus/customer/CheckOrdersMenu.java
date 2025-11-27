@@ -22,7 +22,7 @@ public class CheckOrdersMenu {
 
     public void show() {
         while (true) {
-            int choice = MenuNavigator.navigate("Check Orders", options);
+            int choice = MenuNavigator.navigate("Check Orders", options, true);
 
             switch (choice) {
                 case 0 -> showPendingOrders();

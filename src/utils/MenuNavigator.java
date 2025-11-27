@@ -35,15 +35,17 @@ public class MenuNavigator {
             "⠀⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⣷⣄⡀⣈⣿⣄⠀⠀⡏⣸⣿⣀⣀⣀⣀⣀⣉⣉⣉⣉⣉⣉⣉⣀⣀⣹⣧⡈⣆⠀⣿⣦⡂⠀⡀⠀⣠⣿⠃⠀⠀⠀⠀\n" +
             "⠀⢻⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠰⢾⣿⢿⠿⠿⣿⣿⣿⣿⣿⣿⣷⣾⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣾⣾⣿⣿⣿⣷⣿⣿⣿⡿⠿⢿⡿⡿⠖" +
             "\n" + " \n" ;
-    public static int navigate(String title, String[] options) {
+    public static int navigate(String title, String[] options, boolean clear) {
         int selected = 0;
         String lastInput = "";
 
         int width = 120;
         while (true) {
-            clearScreen();
-            printBorder();
-            printHeaderCentered();
+            if (clear) {  // Only clear if requested
+                clearScreen();
+                printBorder();
+                printHeaderCentered();
+            }
             // Center the title inside the border
             int totalPadding = width - title.length() - 2; // 2 for the spaces around title
             int leftPadding = totalPadding / 2;
@@ -180,6 +182,7 @@ public class MenuNavigator {
     public static void printBorder(){
         System.out.println("=======================================================================================================================");
     }                         
+    
     
 }
 

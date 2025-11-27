@@ -15,7 +15,7 @@ public class AuthMenu {
 
     public Customer show() {
         while (true) {
-            int choice = MenuNavigator.navigate("Welcome Customer", options);
+            int choice = MenuNavigator.navigate("Welcome Customer", options, true);
 
             switch (choice) {
                 case 0 -> {

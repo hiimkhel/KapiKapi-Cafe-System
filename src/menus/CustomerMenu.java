@@ -27,7 +27,7 @@ public class CustomerMenu {
 
     public void show() {
         while (true) {
-            int choice = MenuNavigator.navigate("Customer Menu - " + customer.getUsername(), options);
+            int choice = MenuNavigator.navigate("Customer Menu - " + customer.getUsername(), options, true);
 
             switch (choice) {
                 case 0 -> new OrderMenu(customer).show();       // pass customer object
