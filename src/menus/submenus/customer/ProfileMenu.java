@@ -155,12 +155,31 @@ public class ProfileMenu {
 
     private void achievementsMenu() {
         MenuNavigator.clearScreen();
+        MenuNavigator.printBorder();
         MenuNavigator.printHeaderCentered();
         MenuNavigator.printBorder();
-        System.out.println("=== Achievements ===");
-        System.out.println("Total Orders  : " + CustomerController.getTotalOrders(customer));
-        System.out.println("Total Spent   : ₱" + CustomerController.getTotalSpent(customer));
-        System.out.println("Stamps Earned : " + CustomerController.getStampCount(customer));
+
+        final String RESET = "\u001B[0m";
+        final String CYAN  = "\u001B[36m";
+
+        String customerName = customer.getUsername();
+        int totalOrders = CustomerController.getTotalOrders(customer);
+        double totalSpent = CustomerController.getTotalSpent(customer);
+        int stampsEarned = CustomerController.getStampCount(customer);
+
+        // ========================= CARD LAYOUT =========================
+        ConsoleUtils.printCentered("╔════════════════════════════════════════════════════════════════╗");
+        ConsoleUtils.printCentered("✦✦✦✦✦✦ " + CYAN + "CAFE MOOLA™" + RESET + " ✦✦✦✦✦✦");
+        ConsoleUtils.printCentered("✦✦✦✦✦✦ " + CYAN + "ACHIEVEMENTS" + RESET + " ✦✦✦✦✦✦");
+        ConsoleUtils.printCentered("╠════════════════════════════════════════════════════════════════╣");
+        System.out.println("\t\t\t\tCustomer: " + customerName);
+        ConsoleUtils.printCentered("═════════════════════════════════════════════════════════════════");
+        ConsoleUtils.printCentered(String.format("Total Orders  : %-10d", totalOrders));
+        ConsoleUtils.printCentered(String.format("Total Spent   : ₱%-10.2f", totalSpent));
+        ConsoleUtils.printCentered(String.format("Stamps Earned : %-10d", stampsEarned));
+        ConsoleUtils.printCentered("╚════════════════════════════════════════════════════════════════╝");
+
+        ConsoleUtils.printCentered(""); // spacing
         MenuNavigator.waitForEnter();
     }
 }
