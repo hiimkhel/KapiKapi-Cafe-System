@@ -1,17 +1,18 @@
 package menus.submenus.admin;
 
+import utils.ConsoleUtils;
 import utils.MenuNavigator;
 import controllers.OrderQueue;
 import models.Order;
 
 public class OrdersDashboardMenu {
 
-    private final String[] brewFrames = {
-        "  (o_o) ☕ Brewing...\n",
-        "  (o_o)  ☕ Brewing...\n",
-        "  (o_o)   ☕ Brewing...\n",
-        "  (o_o)    ☕ Brewing...\n",
-        "  (o_o)     ☕ Done!\n"
+       private final String[] brewFrames = {
+        "(•ᴥ•)つ     ☕\nBrewing...",
+        "( •ᴥ•)つ    ☕\nBrewing...",
+        " ( •ᴥ•)つ   ☕\n Brewing...",
+        "  ( •ᴥ•)つ  ☕\n  Brewing...",
+        "   ( •ᴥ•)つ ☕\n   DONE!"
     };
 
     public void show() {
@@ -20,35 +21,60 @@ public class OrdersDashboardMenu {
             MenuNavigator.printHeaderCentered();
             MenuNavigator.printBorder();
 
-
             if (!OrderQueue.hasPendingOrders()) {
-                System.out.println("No pending orders. All caught up!");
+                System.out.println();
+                ConsoleUtils.printCentered("No pending orders — All caught up! (•ᴥ•)つ☕");
+                System.out.println();
+                MenuNavigator.printBorder();
                 MenuNavigator.waitForEnter();
                 return;
             }
 
-            Order order = OrderQueue.getPendingOrders().peek(); // peek to show but not remove yet
-            System.out.println("Next Order:");
-            System.out.println("Customer: " + order.getCustomerName());
-            System.out.println("Items: " + order.getItems());
-            System.out.println("Total: ₱" + order.getTotalPrice());
-            System.out.println("\nPress Enter to start brewing...");
+            // Display brewing header
+            ConsoleUtils.printCentered("╔══════════════════════════════════════════════════════════════╗");
+            ConsoleUtils.printCentered("                     (•ᴥ•)つ ☕ Brewing Order...                ");
+            ConsoleUtils.printCentered("╚══════════════════════════════════════════════════════════════╝");
+            System.out.println();
+
+            // Show queue list
+            ConsoleUtils.printCentered("Next in Queue:");
+            ConsoleUtils.printCentered("──────────────────────────────────────────────────────────────");
+
+            int index = 1;
+            for (Order o : OrderQueue.getPendingOrders()) {
+                System.out.println("\t\t\t\t[ " + index + " ] Customer: " + o.getCustomerName());
+                System.out.println("\t\t\t\t     Items: " + o.getItems());
+                System.out.println("\t\t\t\t     Total: ₱" + o.getTotalPrice());
+                ConsoleUtils.printCentered("──────────────────────────────────────────────────────────────");
+                index++;
+            }
+
+            // Prompt to brew next order
+            ConsoleUtils.printCentered("Press Enter to start brewing the next order...");
             MenuNavigator.waitForEnter();
 
             // Brewing animation
             for (String frame : brewFrames) {
                 MenuNavigator.clearScreen();
-                System.out.println(frame);
+                MenuNavigator.printBorder();
+                MenuNavigator.printHeaderCentered();
+                MenuNavigator.printBorder();
+                ConsoleUtils.printCentered(frame);
                 try {
-                    Thread.sleep(500); // half-second per frame
+                    Thread.sleep(500);
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 }
             }
 
-            // Brew the order
+            // Finish brewing
             OrderQueue.brewNextOrder();
-            System.out.println("\nOrder brewed and completed!");
+            ConsoleUtils.clearScreen();
+            MenuNavigator.printBorder();
+            MenuNavigator.printHeaderCentered();
+            MenuNavigator.printBorder();
+            System.out.println();
+            ConsoleUtils.printCentered("Order completed! (•ᴥ•)つ☕");
             MenuNavigator.waitForEnter();
         }
     }
