@@ -1,6 +1,7 @@
 package menus.submenus.customer;
 
 import models.Customer;
+import utils.ConsoleUtils;
 import utils.MenuNavigator;
 import controllers.CustomerController;
 import database.Database;
@@ -34,21 +35,63 @@ public class ProfileMenu {
     }
 
     private void walletMenu() {
-        MenuNavigator.clearScreen();
-        MenuNavigator.printHeaderCentered();
-        MenuNavigator.printBorder();
-        System.out.println("=== Wallet ===");
-        System.out.println("Balance: ₱" + customer.getWalletBalance());
-        System.out.println("\nTop-up? (Y/N)");
+        String[] options = { "Top-up Wallet", "Return" };
+        int selected = 0;
 
-        if (MenuNavigator.getInput().equalsIgnoreCase("y")) {
-            System.out.print("Enter amount: ₱");
-            int amount = MenuNavigator.getIntInput();
-            CustomerController.topUpWallet(customer, amount);
-            System.out.println("Wallet topped up! New balance: ₱" + customer.getWalletBalance());
+        while (true) {
+            ConsoleUtils.clearScreen();
+            MenuNavigator.printHeaderCentered();
+            MenuNavigator.printBorder();
+
+            // ========================= WALLET HEADER =========================
+            ConsoleUtils.printCentered("███████╗ █████╗ ██╗      ██████╗ ██╗     ███████╗");
+            ConsoleUtils.printCentered("██╔════╝██╔══██╗██║     ██╔═══██╗██║     ██╔════╝");
+            ConsoleUtils.printCentered("█████╗  ███████║██║     ██║   ██║██║     █████╗  ");
+            ConsoleUtils.printCentered("██╔══╝  ██╔══██║██║     ██║   ██║██║     ██╔══╝  ");
+            ConsoleUtils.printCentered("██║     ██║  ██║███████╗╚██████╔╝███████╗███████╗");
+            ConsoleUtils.printCentered("╚═╝     ╚═╝  ╚═╝╚══════╝ ╚═════╝ ╚══════╝╚══════╝");
+            ConsoleUtils.printCentered("──────────────────────────────────────────────────────────────");
+
+            // ========================= BALANCE =========================
+            ConsoleUtils.printCentered("Current Wallet Balance: ₱" + customer.getWalletBalance());
+            ConsoleUtils.printCentered("");
+
+            // ========================= OPTIONS =========================
+            for (int i = 0; i < options.length; i++) {
+                boolean highlight = (i == selected);
+                String line = highlight ? ">> " + options[i] + " <<" : options[i];
+                ConsoleUtils.printCentered(line);
+            }
+
+            ConsoleUtils.printCentered("| Use W/S to navigate, Enter to select |");
+
+            // ========================= INPUT =========================
+            String input = MenuNavigator.getInput().trim().toLowerCase();
+
+            switch (input) {
+                case "w" -> selected = (selected - 1 + options.length) % options.length;
+                case "s" -> selected = (selected + 1) % options.length;
+                case "" -> {
+                    // ENTER pressed
+                    if (selected == 1) { // Return
+                        return;
+                    }
+
+                    // Top-up wallet
+                    ConsoleUtils.printCentered("Enter amount to top-up: ₱");
+                    int amount = MenuNavigator.getIntInput();
+                    if (amount <= 0) {
+                        ConsoleUtils.printCentered("[!] Invalid amount. Press Enter to continue...");
+                        MenuNavigator.waitForEnter();
+                        break;
+                    }
+
+                    CustomerController.topUpWallet(customer, amount);
+                    ConsoleUtils.printCentered("Wallet successfully topped up! New balance: ₱" + customer.getWalletBalance());
+                    MenuNavigator.waitForEnter();
+                }
+            }
         }
-
-        MenuNavigator.waitForEnter();
     }
 
     private void stampCardMenu() {
