@@ -109,7 +109,7 @@ public class OrderMenu {
         }
 
         ConsoleUtils.printCentered("------------------------------------------------------------------");
-        System.out.println("\t\t\t\tTotal: ₱" + customer.getCartTotal());
+        System.out.println("\t\t\t\tTotal:                              ₱" + customer.getCartTotal());
         ConsoleUtils.printCentered("------------------------------------------------------------------");
 
         // Footer input
@@ -131,7 +131,7 @@ public class OrderMenu {
 
         ConsoleUtils.printCentered("------------------------------------------------------------------");
         ConsoleUtils.printCentered("Removed: " + removed.getName());
-        ConsoleUtils.printCentered("Updated Total: ₱" + customer.getCartTotal());
+        ConsoleUtils.printCentered("Updated Total:                              ₱" + customer.getCartTotal());
         ConsoleUtils.printCentered("------------------------------------------------------------------");
         ConsoleUtils.printCentered("Press Enter to continue...");
         MenuNavigator.waitForEnter();
@@ -143,106 +143,83 @@ public class OrderMenu {
     private void checkout() {
         List<Coffee> cart = customer.getCart();
 
-        MenuNavigator.clearScreen();
-        MenuNavigator.printHeaderCentered();
-        MenuNavigator.printBorder();
-
         if (cart.isEmpty()) {
+            ConsoleUtils.clearScreen();
+            MenuNavigator.printHeaderCentered();
+            MenuNavigator.printBorder();
             ConsoleUtils.printCentered("Your cart is empty!");
-            MenuNavigator.waitForEnter();
             return;
         }
 
-        // ========================= RECEIPT HEADER =========================
-        ConsoleUtils.printCentered("[ CHECKOUT RECEIPT ]");
-        ConsoleUtils.printCentered("──────────────────────────────────────────────────────────────────────────");
-        ConsoleUtils.printCentered("");
-        System.out.println("\t\t\tCustomer: " + customer.getUsername());
-        ConsoleUtils.printCentered("");
-        ConsoleUtils.printCentered("----------------------------------------------------------------------------");
-        ConsoleUtils.printCentered("ITEM                 PRICE            ");
-        ConsoleUtils.printCentered("---------------------------------------------------------------------------- ");
-
-        // ========================= CART ITEMS =========================
-        for (Coffee c : cart) {
-            ConsoleUtils.printCentered(String.format(
-                    "%-20s ₱%.2f",
-                    c.getName(),
-                    (double)c.getPrice()
-            ));
-        }
-
-        ConsoleUtils.printCentered("----------------------------------------------------------------------------");
-        ConsoleUtils.printCentered(String.format(
-                "TOTAL:                                     ₱%.2f                      ",
-                (double)customer.getCartTotal()
-        ));
-        ConsoleUtils.printCentered("----------------------------------------------------------------------------");
-        ConsoleUtils.printCentered("");
-
-        // ========================= WALLET CHECK =========================
-        if (customer.getWalletBalance() < customer.getCartTotal()) {
-            ConsoleUtils.printCentered("Insufficient wallet balance! Please top-up in Profile.");
-            MenuNavigator.waitForEnter();
-            return;
-        }
-
-            // ========================= CUSTOM OPTIONS NAVIGATOR =========================
-        int choice = checkoutOptionsNavigator();
-
-        if (choice == 1) { // Cancel
-            ConsoleUtils.printCentered("Order cancelled.");
-            MenuNavigator.waitForEnter();
-            return;
-        }
-
-        // ========================= CREATE ORDER =========================
-        List<String> items = new ArrayList<>();
-        for (Coffee c : cart) items.add(c.getName());
-
-        Order order = new Order(customer.getUsername(), items, customer.getCartTotal());
-
-        Database.addOrder(order);
-        customer.recordOrder(order);
-        customer.deductFromWallet(customer.getCartTotal());
-        OrderQueue.addOrder(order);
-        customer.clearCart();
-
-        ConsoleUtils.printCentered("Order placed! Admin will brew it soon.");
-        MenuNavigator.waitForEnter();
-    }
-
-    // Helper functions 
-    private int checkoutOptionsNavigator() {
         String[] options = { "Checkout", "Cancel" };
         int selected = 0;
 
-        // Print header once
-        System.out.println("\n================================================== Select an option: ===================================================\n");
-
         while (true) {
-            // Draw options
-            for (int i = 0; i < options.length; i++) {
-                if (i == selected) {
-                    System.out.println("\t\t\t\t\t\t    >> " + options[i] + " <<");
-                } else {
-                    System.out.println("\t\t\t\t\t\t      " + options[i]);
-                }
+            ConsoleUtils.clearScreen();
+            MenuNavigator.printHeaderCentered();
+            MenuNavigator.printBorder();
+
+            // ========================= RECEIPT =========================
+            ConsoleUtils.printCentered("[ CHECKOUT RECEIPT ]");
+            ConsoleUtils.printCentered("──────────────────────────────────────────────────────────────────────────");
+            System.out.println("\t\t\tCustomer: " + customer.getUsername());
+            ConsoleUtils.printCentered("----------------------------------------------------------------------------");
+            ConsoleUtils.printCentered("ITEM                 PRICE");
+            ConsoleUtils.printCentered("----------------------------------------------------------------------------");
+
+            for (Coffee c : cart) {
+                ConsoleUtils.printCentered(String.format("%-20s ₱%.2f", c.getName(), (double)c.getPrice()));
             }
 
-            // Prompt
-            System.out.print("\t\t\t| Use W/S to navigate, Enter to select: ");
+            ConsoleUtils.printCentered("----------------------------------------------------------------------------");
+            ConsoleUtils.printCentered(String.format("TOTAL:                                     ₱%.2f", (double)customer.getCartTotal()));
+            ConsoleUtils.printCentered("----------------------------------------------------------------------------");
+            System.out.println();
+
+            // ========================= OPTIONS =========================
+            for (int i = 0; i < options.length; i++) {
+                boolean highlight = (i == selected);
+                String line = highlight ? ">> " + options[i] + " <<" : options[i];
+                ConsoleUtils.printCentered(line);
+            }
+
+            ConsoleUtils.printCentered("| Use W/S to navigate, Enter to select |");
+
+            // ========================= INPUT =========================
             String input = MenuNavigator.getInput().trim().toLowerCase();
+
             switch (input) {
                 case "w" -> selected = (selected - 1 + options.length) % options.length;
                 case "s" -> selected = (selected + 1) % options.length;
-                case ""  -> { return selected; }  // Enter
-                default  -> System.out.println("Invalid input! Use W/S or Enter.");
-            }
+                case "" -> {
+                    // ENTER pressed
+                    if (selected == 1) { // Cancel
+                        ConsoleUtils.printCentered("Order cancelled.");
+                        return;
+                    }
 
-            // Move cursor UP to redraw the options only
-            System.out.print("\033[" + (options.length + 1) + "A"); // +1 for the prompt line
-            System.out.print("\033[J"); // clear everything below cursor
+                    // Check wallet balance
+                    if (customer.getWalletBalance() < customer.getCartTotal()) {
+                        ConsoleUtils.printCentered("Insufficient wallet balance! Please top-up in Profile.");
+                        return;
+                    }
+
+                    // Place order
+                    List<String> items = new ArrayList<>();
+                    for (Coffee c : cart) items.add(c.getName());
+
+                    Order order = new Order(customer.getUsername(), items, customer.getCartTotal());
+
+                    Database.addOrder(order);
+                    customer.recordOrder(order);
+                    customer.deductFromWallet(customer.getCartTotal());
+                    OrderQueue.addOrder(order);
+                    customer.clearCart();
+
+                    ConsoleUtils.printCentered("Order placed! Admin will brew it soon.");
+                    return;
+                }
+            }
         }
     }
 }
