@@ -1,105 +1,27 @@
 package menus;
 
 import utils.ConsoleUtils;
-import java.util.Scanner;
+import utils.MenuNavigator;
 
 public abstract class BaseMenu {
 
     protected String title;
     protected String[] options;
     protected int selected = 0;
-    protected Scanner scanner = new Scanner(System.in);
-    private static final String ASCII_ART = 
-            "⣀⣤⣤⣤⠀⠀⠀⠀⠀⣴⡿⠻⣶⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
-            "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⡟⠀⠀⠈⢻⣦⠀⣠⣾⠛⠉⠀⢹⣧⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
-            "⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣠⣤⣤⣶⠶⠾⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠷⢶⣦⣤⣿⣾⠟⠀⣠⣶⣷⠀⣿⠆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
-            "⠀⠀⠀⠀⢀⣠⣴⠶⠟⠛⠉⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠉⢻⠀⠰⠿⠟⠃⣴⡟⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
-            "⠀⠀⢠⣶⠟⠋⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠑⠤⡤⣴⣾⡟⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
-            "⠀⣰⡿⠁⡠⠒⠋⠉⠓⢄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣤⣄⡀⠀⢇⠀⠘⣿⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
-            "⢰⡟⠀⡜⠁⠀⠀⠀⠀⠈⡆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠻⣿⣿⠟⠀⢸⠗⠀⢸⣧⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
-            "⣾⠇⢸⠁⣴⣦⠀⢠⣶⠀⢳⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢄⣊⣸⠀⠀⠀⣿⡆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
-            "⣿⠀⡈⠀⠙⠋⠀⠈⠛⠀⠘⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡴⠋⠀⠀⡎⡆⠀⠀⢸⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
-            "⣿⠀⡇⠀⠀⢀⢠⠻⠆⠀⠀⢣⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠣⣀⣀⣰⠟⠁⠀⠀⢸⣇⣀⣤⣤⣶⣶⠶⠶⣶⣶⣤⣤⣀⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n" +
-            "⢿⡆⢀⠀⣰⡹⢸⡇⠀⠀⠀⠀⢧⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⠃⠀⠀⠀⣴⢻⡟⠉⠉⠀⠀⠀⠀⠀⠀⠀⠀⠉⠉⠙⠻⢷⣦⣄⠀⠀⠀⠀⠀⠀⠀\n" +
-            "⢸⣇⢸⣴⡿⢃⠈⣿⠀⢠⡀⠀⠀⣇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡴⠁⠀⠀⠀⢴⠞⡐⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠙⢿⣦⡀⠀⠀⠀⠀\n" +
-            "⠀⢿⡆⢣⠀⠘⠿⠟⠛⠛⠀⠀⠀⣸⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡠⠋⠀⠀⠀⠀⠀⠀⢠⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⡝⢿⣆⠀⠀⠀\n" +
-            "⠀⠘⢿⡌⢧⡀⠀⠀⠀⢀⠶⡀⢠⠇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⠴⠊⢀⣴⠶⠀⠀⠀⠀⢠⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢹⠈⢻⣧⠀⠀\n" +
-            "⠀⠀⠈⢿⣆⠑⠦⣀⣴⣯⣂⠴⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⠤⠊⠁⢀⣴⠿⢋⠀⠀⠀⢀⡔⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡇⠀⢹⣧⠀\n" +
-            "⠀⠀⠀⠀⠙⢷⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⡤⠐⠋⠀⣀⣤⡾⠛⠁⠐⠀⠀⢀⠔⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠁⠀⠀⢻⡇\n" +
-            "⠀⠀⠀⠀⠀⠀⠙⠿⢶⣴⣲⣤⠀⠀⠀⠀⡤⠔⠂⢉⣀⣠⣤⡶⠿⠛⣉⣤⠖⠁⢀⠠⠚⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⠴⠀⢸⣷\n" +
-            "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠉⠛⠛⠿⠷⠶⠾⠿⠟⠛⢻⡏⠁⠀⠀⠘⣈⡡⠖⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡇⠀⠀⠀⣿\n" +
-            "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣾⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢰⠁⠀⠀⠀⣿\n" +
-            "⠀⣶⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡎⠀⠀⠀⢠⣿\n" +
-            "⠀⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⢀⠀⠀⠀⠀⠀⠀⠀⡼⠀⠀⠀⠀⣸⡏\n" +
-            "⠀⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠎⠁⠈⠑⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⡠⠊⠁⣀⣳⠀⠀⠀⠀⠀⣰⠁⠀⠀⡠⢠⣿⠁\n" +
-            "⠠⣿⠄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⠀⠀⠀⡠⡄⠀⠀⠀⠀⢸⠀⢠⡄⠀⠀⠙⠢⠤⣀⡀⠀⠀⠀⠤⠐⠉⠀⢀⠀⠉⣰⡆⠀⠀⠀⢀⠃⠀⠠⡔⢤⡿⠃⠀\n" +
-            "⠀⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢹⣇⡠⣴⣧⣿⠠⠤⠤⠄⣸⡀⣿⡁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⡢⠆⣀⣤⣿⡧⠔⠒⠀⡾⠒⠢⠥⣰⡿⠁⠀⠀\n" +
-            "⠀⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⣿⡄⠙⡇⢻⣇⠀⠀⠀⣺⠉⣿⠛⠷⣶⣦⣤⣤⣄⣀⣀⣀⣠⣤⣼⣶⣶⡟⢻⠉⢹⣧⠀⠀⠀⠁⠀⠀⢰⡿⠁⠀⠀⠀\n" +
-            "⠀⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⣷⣄⡀⣈⣿⣄⠀⠀⡏⣸⣿⣀⣀⣀⣀⣀⣉⣉⣉⣉⣉⣉⣉⣀⣀⣹⣧⡈⣆⠀⣿⣦⡂⠀⡀⠀⣠⣿⠃⠀⠀⠀⠀\n" +
-            "⠀⢻⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠰⢾⣿⢿⠿⠿⣿⣿⣿⣿⣿⣿⣷⣾⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣾⣾⣿⣿⣿⣷⣿⣿⣿⡿⠿⢿⡿⡿⠖" +
-            "\n" + " \n" ;
 
     public void show() {
-        int width = 120; 
         while (true) {
             ConsoleUtils.clearScreen();
-            printHeaderCentered();
-            // Center the title inside the border
-            int totalPadding = width - title.length() - 2; // 2 for the spaces around title
-            int leftPadding = totalPadding / 2;
-            int rightPadding = totalPadding - leftPadding;
+            MenuNavigator.printHeaderCentered();
+            int choice = MenuNavigator.navigate(title, options, true);
+            // Exit signal
+            if (choice == -1) return;
 
-            System.out.println("\n" + "=".repeat(leftPadding) + " " + title + " " + "=".repeat(rightPadding) + "\n");
-
-            // Print menu with highlight
-            for (int i = 0; i < options.length; i++) {
-                if (i == selected) {
-                    System.out.println("> " + options[i]);
-                } else {
-                    System.out.println("  " + options[i]);
-                }
-            }
-
-            System.out.println("\nUse W/S to navigate and Enter to select.");
-
-            // Input
-            String input = scanner.nextLine().toLowerCase();
-
-            switch (input) {
-                case "w" -> selected = (selected - 1 + options.length) % options.length;
-                case "s" -> selected = (selected + 1) % options.length;
-                case "" -> {
-                    if (handleSelection(selected)) return; // exit if menu returns true
-                }
-                default -> System.out.println("Invalid input! Use W/S or Enter.");
-            }
+            // Handle menu selection
+            if (handleSelection(choice)) return;
         }
     }
 
-    // Each menu will override this
+    // Each menu implements its own action
     protected abstract boolean handleSelection(int index);
-
-    public static void printHeaderCentered() {
-        String[] lines = {
-            "██╗  ██╗ █████╗ ██████╗ ██╗██╗  ██╗ █████╗ ██████╗ ██╗     ██████╗ █████╗ ███████╗███████╗",
-            "██║ ██╔╝██╔══██╗██╔══██╗██║██║ ██╔╝██╔══██╗██╔══██╗██║    ██╔════╝██╔══██╗██╔════╝██╔════╝",
-            "█████╔╝ ███████║██████╔╝██║█████╔╝ ███████║██████╔╝██║    ██║     ███████║█████╗  █████╗  ",
-            "██╔═██╗ ██╔══██║██╔═══╝ ██║██╔═██╗ ██╔══██║██╔═══╝ ██║    ██║     ██╔══██║██╔══╝  ██╔══╝  ",
-            "██║  ██╗██║  ██║██║     ██║██║  ██╗██║  ██║██║     ██║    ╚██████╗██║  ██║██║     ███████╗",
-            "╚═╝  ╚═╝╚═╝  ╚═╝╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝     ╚═╝     ╚═════╝╚═╝  ╚═╝╚═╝     ╚══════╝"
-        };
-
-        int width = 120; // <-- Change depending on your terminal width
-        // Print ASCII art
-        String[] artLines = ASCII_ART.split("\n");
-        for (String line : artLines) {
-            int padding = (width - line.length()) / 2;
-            System.out.println(" ".repeat(Math.max(0, padding)) + line);
-        }   
-
-        for (String line : lines) {
-            int padding = (width - line.length()) / 2;
-            System.out.println(" ".repeat(Math.max(0, padding)) + line);
-        }
-    }
 }

@@ -37,15 +37,17 @@ public class MenuNavigator {
             "\n" + " \n" ;
     public static int navigate(String title, String[] options, boolean clear) {
         int selected = 0;
+        boolean firstLoop = true;
         String lastInput = "";
 
         int width = 120;
         while (true) {
-            if (clear) {  // Only clear if requested
+            if (clear || !firstLoop) {  // Only clear if requested
                 clearScreen();
                 printBorder();
                 printHeaderCentered();
             }
+            firstLoop = false;
             // Center the title inside the border
             int totalPadding = width - title.length() - 2; // 2 for the spaces around title
             int leftPadding = totalPadding / 2;
