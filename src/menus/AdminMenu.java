@@ -2,6 +2,8 @@ package menus;
 
 import menus.submenus.admin.*;
 import utils.ConsoleUtils;
+import utils.InputValidator;
+import utils.MenuNavigator;
 
 public class AdminMenu extends BaseMenu {
 
@@ -18,17 +20,38 @@ public class AdminMenu extends BaseMenu {
 
     @Override
     protected boolean handleSelection(int index) {
-        ConsoleUtils.clearScreen();
         switch (index) {
-            case 0 -> new OrdersDashboardMenu().show();
-            case 1 -> new MenuInventoryMenu().show();
-            case 2 -> new CustomerAnalyticsMenu().show();
-            case 3 -> new EmployeeManagementMenu().show();
+            case 0 -> {
+                ConsoleUtils.clearScreen();
+                new OrdersDashboardMenu().show();
+            }
+            case 1 -> {
+                ConsoleUtils.clearScreen();
+                new MenuInventoryMenu().show();
+            }
+            case 2 -> {
+                ConsoleUtils.clearScreen();
+                new CustomerAnalyticsMenu().show();
+            }
+            case 3 -> {
+                ConsoleUtils.clearScreen();
+                new EmployeeManagementMenu().show();
+            }
             case 4 -> { // Logout
+                ConsoleUtils.clearScreen();
                 System.out.println("Logging out...");
                 return true;
             }
         }
         return false;
+    }
+
+    @Override
+    public void show() {
+        boolean exit = false;
+        while (!exit) {
+            int choice = MenuNavigator.navigate(title, options, true);
+            exit = handleSelection(choice);
+        }
     }
 }

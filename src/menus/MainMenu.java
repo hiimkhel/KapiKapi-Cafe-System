@@ -4,34 +4,31 @@ import models.Customer;
 import utils.ConsoleUtils;
 import utils.MenuNavigator;
 
-public class MainMenu {
+public class MainMenu extends BaseMenu {
 
-    public static void show() {
-        String title = "Welcome to our Cafe";
-        String[] options = {"Customer Login", "Admin Login", "Exit"};
+    public MainMenu() {
+        this.title = "Welcome to our Cafe";
+        this.options = new String[]{"Customer Login", "Admin Login", "Exit"};
 
-        while (true) {
-            int choice = MenuNavigator.navigate(title, options, true);
+    }
 
-            switch (choice) {
-                case 0 -> {handleCustomerLogin();
-                    MenuNavigator.clearScreen();
-                }
-                case 1 -> {handleAdminLogin();
-                    MenuNavigator.clearScreen();
-                }
-                case 2, -1 -> {
-                    System.out.println("Exiting...");
-                    MenuNavigator.waitForEnter();
-                    System.exit(0);
-                }
+    @Override
+    protected boolean handleSelection(int index){
+        switch (index) {
+            case 0 -> handleCustomerLogin();
+            case 1 -> handleAdminLogin();
+            case 2, -1 -> {
+                exitApp();
+                return true; // exit loop
             }
         }
+        return false; // stay in menu
     }
 
     private static void handleCustomerLogin() {
+        MenuNavigator.clearScreen(); // Clear before showing submenu
         AuthMenu authMenu = new AuthMenu();
-        Customer loggedInCustomer = authMenu.show();
+        Customer loggedInCustomer = authMenu.showAuthMenu();
 
         if (loggedInCustomer != null) {
             ConsoleUtils.printCentered("Customer login successful: " + loggedInCustomer.getUsername());
@@ -46,7 +43,7 @@ public class MainMenu {
         int attempts = 0;
 
         while (attempts < 3) {
-            MenuNavigator.clearScreen();
+            MenuNavigator.clearScreen(); // Clear each attempt
             MenuNavigator.printHeaderCentered();
             System.out.println("=======================================================================================================================");
             System.out.print("\t\t\t\tEnter admin password: ");
@@ -54,6 +51,7 @@ public class MainMenu {
 
             if (password.isEmpty()) {
                 ConsoleUtils.printCentered("Password cannot be empty.\n");
+                MenuNavigator.waitForEnter();
             } else if (password.equals("admin123")) {
                 ConsoleUtils.printCentered("Admin login successful!");
                 new AdminMenu().show();
@@ -61,6 +59,7 @@ public class MainMenu {
             } else {
                 attempts++;
                 ConsoleUtils.printCentered("Incorrect admin password. Attempts left: " + (3 - attempts) + "\n");
+                MenuNavigator.waitForEnter();
             }
         }
 
@@ -68,7 +67,14 @@ public class MainMenu {
         MenuNavigator.waitForEnter();
     }
 
+    private static void exitApp() {
+        MenuNavigator.clearScreen();
+        System.out.println("Exiting...");
+        MenuNavigator.waitForEnter();
+        System.exit(0);
+    }
+
     public static void main(String[] args) {
-        show();
+        new MainMenu().show();
     }
 }

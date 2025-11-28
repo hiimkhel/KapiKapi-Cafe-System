@@ -1,44 +1,43 @@
 package menus;
 
 import utils.MenuNavigator;
+import models.Customer;
 
 // import the customer menus from the submenus folder
 import menus.submenus.customer.OrderMenu;
 import menus.submenus.customer.CheckOrdersMenu;
 import menus.submenus.customer.ProfileMenu;
 import menus.submenus.customer.WrappedPage;
-import models.Customer;
 
-public class CustomerMenu {
+public class CustomerMenu extends BaseMenu {
 
-    private Customer customer; // store the full customer object
+    private final Customer customer;
 
-    public CustomerMenu(Customer customer){
+    public CustomerMenu(Customer customer) {
         this.customer = customer;
+        this.title = "Customer Menu - " + customer.getUsername();
+        this.options = new String[]{
+            "Order Drinks",
+            "My Orders",
+            "KapiKapi Wrapped",
+            "Profile & Rewards",
+            "Logout"
+        };
     }
 
-    private final String[] options = {
-        "Order Drinks",
-        "My Orders",
-        "KapiKapi Wrapped",
-        "Profile & Rewards",
-        "Logout"
-    };
-
-    public void show() {
-        while (true) {
-            int choice = MenuNavigator.navigate("Customer Menu - " + customer.getUsername(), options, true);
-
-            switch (choice) {
-                case 0 -> new OrderMenu(customer).show();       // pass customer object
-                case 1 -> new CheckOrdersMenu(customer).show(); // pass customer object
-                case 2 -> new WrappedPage(customer).show();     // pass customer object
-                case 3 -> new ProfileMenu(customer).show();     // pass customer object
-                case 4 -> {
-                    System.out.println("Logged out.");
-                    return;
-                }
+    @Override
+    protected boolean handleSelection(int index) {
+        switch (index) {
+            case 0 -> new OrderMenu(customer).show();
+            case 1 -> new CheckOrdersMenu(customer).show();
+            case 2 -> new WrappedPage(customer).show();
+            case 3 -> new ProfileMenu(customer).show();
+            case 4, -1 -> { // Logout
+                System.out.println("Logged out.");
+                MenuNavigator.waitForEnter();
+                return true; // exit menu loop
             }
         }
+        return false;
     }
 }

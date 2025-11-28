@@ -5,38 +5,59 @@ import models.Customer;
 import utils.ConsoleUtils;
 import utils.MenuNavigator;
 
-public class AuthMenu {
+public class AuthMenu extends BaseMenu {
 
-    private final String[] options = {
-        "Login",
-        "Register",
-        "Exit"
-    };
+    private Customer loggedInCustomer; // store result for BaseMenu handling
 
-    public Customer show() {
-        while (true) {
-            int choice = MenuNavigator.navigate("Welcome Customer", options, true);
+    public AuthMenu() {
+        this.title = "Welcome Customer";
+        this.options = new String[]{"Login", "Register", "Exit"};
+    }
 
-            switch (choice) {
-                case 0 -> {
-                    ConsoleUtils.clearScreen();
-                    printHeaderCentered();
-                    Customer customer = CustomerController.login();
-                    if (customer != null) return customer;
-                }
-                case 1 -> {
-                    ConsoleUtils.clearScreen();
-                    printHeaderCentered();
-                    Customer customer = CustomerController.register();
-                    if (customer != null) return customer;
-                }
-                case 2 -> {
-                    return null;
-                }
+    @Override
+    protected boolean handleSelection(int index) {
+        switch (index) {
+            case 0 -> handleLogin();
+            case 1 -> handleRegister();
+            case 2, -1 -> {
+                loggedInCustomer = null; // exit
+                return true;
             }
+        }
+        return false;
+    }
 
+    private void handleLogin() {
+        MenuNavigator.clearScreen();
+        printHeaderCentered();
+        Customer customer = CustomerController.login();
+        if (customer != null) {
+            loggedInCustomer = customer;
+            // returning true will exit the menu loop
+            MenuNavigator.clearScreen();
+        } else {
+            ConsoleUtils.printCentered("Login failed. Returning to menu...");
             MenuNavigator.waitForEnter();
         }
+    }
+
+    private void handleRegister() {
+        MenuNavigator.clearScreen();
+        printHeaderCentered();
+        Customer customer = CustomerController.register();
+        if (customer != null) {
+            loggedInCustomer = customer;
+            MenuNavigator.clearScreen();
+        } else {
+            ConsoleUtils.printCentered("Registration failed. Returning to menu...");
+            MenuNavigator.waitForEnter();
+        }
+    }
+
+    public Customer showAuthMenu() {
+        // Use BaseMenu's show() loop
+        this.show();
+        return loggedInCustomer;
     }
 
     public static void printHeaderCentered() {
@@ -47,10 +68,10 @@ public class AuthMenu {
             "██╔═██╗ ██╔══██║██╔═══╝ ██║██╔═██╗ ██╔══██║██╔═══╝ ██║    ██║     ██╔══██║██╔══╝  ██╔══╝  ",
             "██║  ██╗██║  ██║██║     ██║██║  ██╗██║  ██║██║     ██║    ╚██████╗██║  ██║██║     ███████╗",
             "╚═╝  ╚═╝╚═╝  ╚═╝╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝     ╚═╝     ╚═════╝╚═╝  ╚═╝╚═╝     ╚══════╝",
-        "======================================================================================================================="
+            "======================================================================================================================="
         };
 
-        int width = 120; // <-- Change depending on your terminal width
+        int width = 120; // Adjust to terminal width
 
         for (String line : lines) {
             int padding = (width - line.length()) / 2;
