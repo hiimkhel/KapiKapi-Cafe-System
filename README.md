@@ -6,13 +6,6 @@ Welcome to the Cafe Management Console App – a fully console-based application
 ## Table of Contents
 1. Features
 2. Installation
-3. Usage
-4. Project Structure
-5. Classes & Modules
-6. Data Persistence
-7. Menu Navigation
-8. Contributing
-9. License
 
 ## Features
 - Customer Management: Register, update, and view customer accounts and points.
