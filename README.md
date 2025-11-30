@@ -1,6 +1,6 @@
 # KapiKapi Cafe Management System
 
-![KapiKapi Main Menu](Main Menu.png)
+![KapiKapi Main Menu](MainMenu.png)
 Welcome to the Cafe Management Console App – a fully console-based application for managing a cafe's customers, employees, menu, orders, and analytics. This project is built in Java and demonstrates object-oriented programming, file persistence, and menu-driven user interfaces.
 
 ## Table of Contents
